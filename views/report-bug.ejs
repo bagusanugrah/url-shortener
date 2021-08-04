@@ -1,0 +1,28 @@
+<%- include('./includes/top.ejs') %>
+    <% if(successMessage){ %>
+        <%- include('./includes/components/alert/success.ejs') %>
+    <% } %>
+    <% if(problemMessage){ %>
+        <%- include('./includes/components/alert/problem.ejs') %>
+    <% } %>
+    <div class="card shadow-lg border-0 rounded-lg mb-4">
+        <div class="card-header justify-content-center"><h3 class="fw-light my-4">Laporkan Bug</h3></div>
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label class="mb-1">Screenshot Bug</label><br>
+                    <input type="file" id="screenshot" name="filename">
+                </div>
+                <div class="mb-3">
+                    <div class="mb-0"><label for="exampleFormControlTextarea1">Jelaskan bug/kesalahannya seperti apa <span style="color: red;">*</span></label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                    </div>    
+                </div>
+                <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                    <p style="margin: 0; padding: 0;"><span style="color: red;">*</span> artinya wajib diisi</p>
+                    <input class="btn btn-primary" type="submit" value="Kirim Laporan">
+                </div>
+            </form>
+        </div>
+    </div>
+<%- include('./includes/bottom.ejs') %>

@@ -1,0 +1,15 @@
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.btn-gray {
+    color: #fff;
+    background-color: #adb5bd;
+    border-color: #adb5bd;
+}
+.btn-gray:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}

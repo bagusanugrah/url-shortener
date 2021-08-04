@@ -1,0 +1,35 @@
+<%- include('./includes/top.ejs') %>
+    <% if(successMessage){ %>
+        <%- include('./includes/components/alert/success.ejs') %>
+    <% } %>
+    <% if(problemMessage){ %>
+        <%- include('./includes/components/alert/problem.ejs') %>
+    <% } %>
+    <div class="card shadow-lg border-0 rounded-lg mb-4">
+        <div class="card-header justify-content-center"><h3 class="fw-light my-4">Login</h3></div>
+        <div class="card-body">
+            <!-- Login form-->
+            <form>
+                <!-- Form Group (email address)-->
+                <div class="mb-3">
+                    <label class="small mb-1" for="inputEmailAddress">Email <span style="color: red;">*</span></label>
+                    <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter email address">
+                </div>
+                <!-- Form Group (password)-->
+                <div class="mb-3">
+                    <label class="small mb-1" for="inputPassword">Password <span style="color: red;">*</span></label>
+                    <input class="form-control" id="inputPassword" type="password" placeholder="Enter password">
+                </div>
+                <!-- Form Group (login box)-->
+                <div class="d-flex align-items-center justify-content-between mt-4 mb-3">
+                    <a class="small" href="/reset-password">Forgot Password?</a>
+                    <input class="btn btn-primary" type="submit" value="Login">
+                </div>
+                <p style="margin: 0; padding: 0;"><span style="color: red;">*</span> artinya wajib diisi</p>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+            <div class="small"><a href="/register">Need an account? Sign up!</a></div>
+        </div>
+    </div>
+<%- include('./includes/bottom.ejs') %>
