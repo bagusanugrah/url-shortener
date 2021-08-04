@@ -35,10 +35,10 @@ app.use(
       proxy: true,
     }),
 );
+myStore.sync();
 app.use(csrfProtection);
 app.use(flash());
 
-myStore.sync();
 
 app.use((req, res, next) => {// supaya variable bisa dipakai di semua render views
   res.locals.isAuthenticated = req.session.isLoggedIn;
