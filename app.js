@@ -8,7 +8,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 
-const {sequelize, GuestShortenedUrl} = require('./models');
+const {sequelize, GuestShortenedUrl, User, EmailVerification, PasswordReset} = require('./models');
 const mainRoutes = require('./routes/main');
 const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
@@ -46,11 +46,44 @@ app.use((req, res, next) => {// supaya variable bisa dipakai di semua render vie
   next();
 });
 
-app.use(async (req, res, next) => {
+app.use(async (req, res, next) => {// penghapus otomatis
   await GuestShortenedUrl.destroy({
     where: {
       expiredAt: {
-        [Op.lte]: Date.now(),
+        [Op.lt]: Date.now(),
+      },
+    },
+  });
+  next();
+});
+
+app.use(async (req, res, next) => {// penghapus otomatis
+  await EmailVerification.destroy({
+    where: {
+      expiredAt: {
+        [Op.lt]: Date.now(),
+      },
+    },
+  });
+  next();
+});
+
+app.use(async (req, res, next) => {// penghapus otomatis
+  await PasswordReset.destroy({
+    where: {
+      expiredAt: {
+        [Op.lt]: Date.now(),
+      },
+    },
+  });
+  next();
+});
+
+app.use(async (req, res, next) => {// penghapus otomatis
+  await User.destroy({
+    where: {
+      expiredAt: {
+        [Op.lt]: Date.now(),
       },
     },
   });

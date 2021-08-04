@@ -9,11 +9,11 @@
         <div class="card-header justify-content-center"><h3 class="fw-light my-4">Create Account</h3></div>
         <div class="card-body">
             <!-- Registration form-->
-            <form>
+            <form action="/register" method="POST" novalidate>
                 <!-- Form Group (email address)            -->
                 <div class="mb-3">
                     <label class="small mb-1" for="inputEmailAddress">Email <span style="color: red;">*</span></label>
-                    <input class="form-control" id="inputEmailAddress" type="email" aria-describedby="emailHelp" placeholder="Enter email address">
+                    <input class="form-control" id="inputEmailAddress" value="<%= oldInput.email %>" name="email" type="email" aria-describedby="emailHelp" placeholder="Enter email address">
                 </div>
                 <!-- Form Row    -->
                 <div class="row gx-3">
@@ -21,20 +21,21 @@
                         <!-- Form Group (password)-->
                         <div class="mb-3">
                             <label class="small mb-1" for="inputPassword">Password <span style="color: red;">*</span></label>
-                            <input class="form-control" id="inputPassword" type="password" placeholder="Enter password">
+                            <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Enter password">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <!-- Form Group (confirm password)-->
                         <div class="mb-3">
                             <label class="small mb-1" for="inputConfirmPassword">Confirm Password <span style="color: red;">*</span></label>
-                            <input class="form-control" id="inputConfirmPassword" type="password" placeholder="Confirm password">
+                            <input class="form-control" id="inputConfirmPassword" name="confirmPassword" type="password" placeholder="Confirm password">
                         </div>
                     </div>
                 </div>
                 <!-- Form Group (create account submit)-->
                 <p style="margin: 0; padding: 0;" class="mb-3"><span style="color: red;">*</span> artinya wajib diisi</p>
-                <input class="btn btn-primary" type="submit" value="Create Account">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn btn-primary" type="submit">Create Account</button>
             </form>
         </div>
         <div class="card-footer text-center">
