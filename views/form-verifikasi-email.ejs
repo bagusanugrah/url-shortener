@@ -1,0 +1,32 @@
+<%- include('./includes/top.ejs') %>
+    <% if(successMessage){ %>
+        <%- include('./includes/components/alert/success.ejs') %>
+    <% } %>
+    <% if(problemMessage){ %>
+        <%- include('./includes/components/alert/problem.ejs') %>
+    <% } %>
+    <div class="card shadow-lg border-0 rounded-lg mb-4">
+        <div class="card-header justify-content-center"><h3 class="fw-light my-4">Verifikasi Email</h3></div>
+        <div class="card-body">
+            <div class="small mb-3 text-muted">Masukkan email anda, nanti sistem akan mengirimkan link ke email anda untuk verifikasi email anda.</div>
+            <!-- Forgot password form-->
+            <form action="/form-verifikasi-email" method="POST" novalidate>
+                <!-- Form Group (email address)-->
+                <div class="mb-3">
+                    <label class="small mb-1" for="inputEmailAddress">Email <span style="color: red;">*</span></label>
+                    <input class="form-control" id="inputEmailAddress" name="email" type="email" aria-describedby="emailHelp" placeholder="Enter email address">
+                </div>
+                <!-- Form Group (submit options)-->
+                <div class="d-flex align-items-center justify-content-between mt-4 mb-3">
+                    <a class="small" href="/login">Return to login</a>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button class="btn btn-primary" type="submit">Kirim Link Verifikasi Email</button>
+                </div>
+                <p style="margin: 0; padding: 0;"><span style="color: red;">*</span> artinya wajib diisi</p>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+            <div class="small"><a href="/register">Need an account? Sign up!</a></div>
+        </div>
+    </div>
+<%- include('./includes/bottom.ejs') %>
