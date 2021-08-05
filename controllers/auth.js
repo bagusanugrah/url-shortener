@@ -3,7 +3,7 @@ const {validationResult} = require('express-validator/check');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 
-const {User, EmailVerification} = require('../models');
+const {User, EmailVerification, PasswordReset} = require('../models');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -14,6 +14,12 @@ const transporter = nodemailer.createTransport({
     pass: 'Pcgame20072000',
   },
 });
+
+exports.getTokenKadaluarsa = (req, res, next) => {
+  res.render('token-kadaluarsa', {
+    pageTitle: 'Token Sudah Kadaluarsa',
+  });
+};
 
 exports.getLogin = (req, res, next) => {
   let successMessage = req.flash('success');
@@ -26,7 +32,7 @@ exports.getLogin = (req, res, next) => {
 
   res.render('login', {
     pageTitle: 'Login',
-    problemMessage: 'Invalid email!',
+    problemMessage: '',
     successMessage,
   });
 };
@@ -42,14 +48,14 @@ exports.getRegister = (req, res, next) => {
 
 exports.postRegister = async (req, res, next) => {
   try {
-    const email = req.body.email.toLowerCase();
-    const password = req.body.password;
+    const email = req.body.email.toLowerCase();// ambil email dari form
+    const password = req.body.password;// ambil password dari form
     const status = 'unverified';
     const expiredAt = Date.now() + (1000*60*5);// (3600000*24)
-    const token = nanoid(32);
+    const token = nanoid(32);// membuat token baru
     const validationErrors = validationResult(req);
 
-    if (!validationErrors.isEmpty()) {
+    if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('register', {
         pageTitle: 'Sign Up',
         problemMessage: validationErrors.array()[0].msg,
@@ -58,10 +64,10 @@ exports.postRegister = async (req, res, next) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 12);// mengenkripsi password
 
-    await User.create({email, password: hashedPassword, status, expiredAt});
-    await EmailVerification.create({token, email, expiredAt});
+    await User.create({email, password: hashedPassword, status, expiredAt});// membuat user baru
+    await EmailVerification.create({token, email, expiredAt});// simpan token baru dalam database
 
     res.render('register', {
       pageTitle: 'Sign Up',
@@ -71,7 +77,7 @@ exports.postRegister = async (req, res, next) => {
     });
 
     transporter.sendMail({
-      to: req.body.email,
+      to: email,
       from: 'URLmu.id',
       subject: 'Verifikasi Email',
       html: `
@@ -87,6 +93,12 @@ exports.postRegister = async (req, res, next) => {
     err.httpStatusCode = 500;
     return next(err);
   }
+};
+
+exports.getVerifikasiBerhasil = (req, res, next) => {
+  res.render('verifikasi-berhasil', {
+    pageTitle: 'Email Berhasil Diverifikasi!',
+  });
 };
 
 exports.getFormVerifikasiEmail = (req, res, next) => {
@@ -107,11 +119,11 @@ exports.getFormVerifikasiEmail = (req, res, next) => {
 
 exports.postFormVerifikasiEmail = async (req, res, next) => {
   try {
-    const email = req.body.email;
-    const tokenData = await EmailVerification.findOne({where: {email}});
+    const email = req.body.email.toLowerCase();// ambil email dari form
+    const tokenData = await EmailVerification.findOne({where: {email}});// cari token di database
     const validationErrors = validationResult(req);
 
-    if (!validationErrors.isEmpty()) {
+    if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('form-verifikasi-email', {
         pageTitle: 'Form Verifikasi Email',
         problemMessage: validationErrors.array()[0].msg,
@@ -119,20 +131,22 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       });
     }
 
-    const user = await User.findOne({where: {email}});
+    const user = await User.findOne({where: {email}});// cari user di database
     const expiredAt = Date.now() + (1000*60*5);// (3600000*24)
 
-    if (tokenData) {
-      const token = tokenData.token;
+    if (tokenData) {// jika token ketemu
+      const token = tokenData.token;// ambil tokennya
 
+      // perbarui masa tenggang penghapusan token
       tokenData.expiredAt = expiredAt;
       await tokenData.save();
 
+      // perbarui masa tenggang penghapusan user
       user.expiredAt = expiredAt;
       await user.save();
 
-      transporter.sendMail({
-        to: req.body.email,
+      transporter.sendMail({// kirimkan token yang ketemu tadi
+        to: email,
         from: 'URLmu.id',
         subject: 'Verifikasi Email',
         html: `
@@ -142,16 +156,17 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
         </a></p>
         `,
       });
-    } else {
-      const token = nanoid(32);
+    } else {// jika token tidak ketemu
+      const token = nanoid(32);// buat token baru
 
-      await EmailVerification.create({token, email, expiredAt});
+      await EmailVerification.create({token, email, expiredAt});// simpan token baru dalam database
 
+      // perbarui masa tenggang penghapusan user
       user.expiredAt = expiredAt;
       await user.save();
 
-      transporter.sendMail({
-        to: req.body.email,
+      transporter.sendMail({// kirimkan token baru
+        to: email,
         from: 'URLmu.id',
         subject: 'Verifikasi Email',
         html: `
@@ -166,7 +181,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
     res.render('form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
       problemMessage: '',
-      successMessage: 'Link untuk verifikasi email telah dikirim ke email anda',
+      successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
     });
   } catch (error) {
     console.log(error);
@@ -178,12 +193,11 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
 exports.getVerifikasiEmail = async (req, res, next) => {
   try {
-    const token = req.params.token;
-    const tokenData = await EmailVerification.findOne({where: {token}});
+    const token = req.params.token;// ambil token dari paramater url
+    const tokenData = await EmailVerification.findOne({where: {token}});// cari token di database
 
-    if (!tokenData) {
-      req.flash('error', 'Token sudah kadaluarsa, silahkan isi form di bawah ini untuk mendapatkan kembali link verifikasi.');
-      return res.redirect('/form-verifikasi-email');
+    if (!tokenData) {// jika token tidak ketemu
+      return res.redirect('/token-kadaluarsa');
     }
 
     res.render('verifikasi-email', {
@@ -200,23 +214,24 @@ exports.getVerifikasiEmail = async (req, res, next) => {
 
 exports.postVerifikasiEmail = async (req, res, next) => {
   try {
-    const token = req.body.token;
-    const tokenData = await EmailVerification.findOne({where: {token}});
+    const token = req.body.token;// ambil token dari hidden form
+    const tokenData = await EmailVerification.findOne({where: {token}});// cari token di database
 
-    if (!tokenData) {
-      req.flash('error', 'Token sudah kadaluarsa, silahkan isi form di bawah ini untuk mendapatkan kembali link verifikasi.');
-      return res.redirect('/form-verifikasi-email');
+    if (!tokenData) {// jika token tidak ketemu
+      return res.redirect('/token-kadaluarsa');
     }
 
-    const user = await User.findOne({where: {email: tokenData.email}});
+    const user = await User.findOne({where: {email: tokenData.email}});// cari user di database
 
-    user.status = 'verified';
+    user.status = 'verified';// perbarui status user menjadi terverifikasi
+
+    // perbarui masa tenggang penghapusan user
     user.expiredAt = Date.now() + (1000*3600*24);// (1000*3600*24*30*6)
-    await user.save();
-    await tokenData.destroy();
 
-    req.flash('success', 'Email anda berhasil diverfikasi! Sekarang anda sudah bisa login.');
-    res.redirect('/login');
+    await user.save();// perbarui data user
+    await tokenData.destroy();// menghapus token dari database
+
+    res.redirect('/verifikasi-berhasil');
   } catch (error) {
     console.log(error);
     const err = new Error(error);
@@ -225,9 +240,138 @@ exports.postVerifikasiEmail = async (req, res, next) => {
   }
 };
 
-exports.getReset = (req, res, next) => {
-  res.render('reset-password', {
+exports.getResetForm = (req, res, next) => {
+  res.render('form-reset-password', {
     pageTitle: 'Reset Password',
-    problemMessage: 'Invalid email!',
+    problemMessage: '',
+    successMessage: '',
+    oldInput: '',
   });
+};
+
+exports.postResetForm = async (req, res, next) => {
+  try {
+    const email = req.body.email.toLowerCase();// ambil email dari form
+    const expiredAt = Date.now() + (1000*60*5);
+    const tokenData = await PasswordReset.findOne({where: {email}});// cari token di database
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
+      return res.status(422).render('form-reset-password', {
+        pageTitle: 'Reset Password',
+        problemMessage: validationErrors.array()[0].msg,
+        successMessage: '',
+        oldInput: {email},
+      });
+    }
+
+    if (tokenData) {// jika token ketemu
+      const token = tokenData.token;// ambil tokennya
+
+      tokenData.expiredAt = expiredAt;// perbarui masa tenggang penghapusan token
+      await tokenData.save();// perbarui data token
+
+      transporter.sendMail({
+        to: email,
+        from: 'URLmu.id',
+        subject: 'Reset Password',
+        html: `
+        <h3>Klik link di bawah ini untuk ganti password anda</h3>
+        <p><a href="http://localhost:5000/reset-password/${token}" target="_blank">
+          http://localhost:5000/reset-password/${token}
+        </a></p>
+        `,
+      });
+    } else {// jika token tidak ketemu
+      const token = nanoid(32);// buat token baru
+
+      await PasswordReset.create({token, email, expiredAt}); // simpan token baru dalam database
+
+      transporter.sendMail({
+        to: email,
+        from: 'URLmu.id',
+        subject: 'Reset Password',
+        html: `
+        <h3>Klik link di bawah ini untuk ganti password anda</h3>
+        <p><a href="http://localhost:5000/reset-password/${token}" target="_blank">
+          http://localhost:5000/reset-password/${token}
+        </a></p>
+        `,
+      });
+    }
+
+    res.render('form-reset-password', {
+      pageTitle: 'Reset Password',
+      problemMessage: '',
+      successMessage: 'Link untuk ganti password telah dikirim ke email anda.',
+      oldInput: '',
+    });
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
+};
+
+exports.getReset = async (req, res, next) => {
+  try {
+    const token = req.params.token;// ambil token dari parameter url
+    let problemMessage = req.flash('error');
+    const tokenData = await PasswordReset.findOne({where: {token}});// cari token di database
+
+    if (!tokenData) {// jika token tidak ketemu
+      return res.redirect('/token-kadaluarsa');
+    }
+
+    if (problemMessage.length > 0) {
+      problemMessage = problemMessage[0];
+    } else {
+      problemMessage = '';
+    }
+
+    res.render('reset-password', {
+      pageTitle: 'Reset Password',
+      problemMessage,
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
+};
+
+exports.postReset = async (req, res, next) => {
+  try {
+    const token = req.body.token;// ambil token dari hidden form
+    const password = req.body.password;// ambil password dari form
+    const newPassword = await bcrypt.hash(password, 12);// mengenkripsi password
+    const tokenData = await PasswordReset.findOne({where: {token}});// cari token di database
+    const validationErrors = validationResult(req);
+
+    if (!tokenData) {// jika token tidak ketemu
+      return res.redirect('/token-kadaluarsa');
+    }
+
+    if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
+      req.flash('error', validationErrors.array()[0].msg);
+      return res.redirect(`/reset-password/${token}`);
+    }
+
+    const user = await User.findOne({where: {email: tokenData.email}});// cari user di database
+
+    user.password = newPassword;// perbarui password user
+    await user.save();// perbarui data user
+    await tokenData.destroy();// hapus token dari database
+
+    req.flash('success', 'Password berhasil diganti!');
+    res.redirect('/login');
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
 };
