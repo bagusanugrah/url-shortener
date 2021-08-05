@@ -2,7 +2,7 @@
   "development": {
     "username": "admin",
     "password": "admin",
-    "database": "pendekin_link_2021",
+    "database": "url_shortener",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },

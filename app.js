@@ -98,7 +98,8 @@ app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
   // res.redirect('/500');
-  res.status(error.httpStatusCode).render('500', {
+  const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
+  res.status(statusCode).render('500', {
     pageTitle: 'Technical Error!',
     path: '/500',
   });
@@ -106,6 +107,6 @@ app.use((error, req, res, next) => {
 
 app.listen({port: 5000}, async () => {
   console.log('Server is running');
-  await sequelize.authenticate();
+  await sequelize.sync();
   console.log('CONNECTED TO THE DATABASE');
 });
