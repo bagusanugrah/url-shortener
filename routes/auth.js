@@ -4,17 +4,39 @@ const express = require('express');
 const {body} = require('express-validator/check');
 
 const authController = require('../controllers/auth');
+const {isGuest} = require('../controllers/main');
+const errorController = require('../controllers/error');
 const {User} = require('../models');
 
 const router = express.Router();
 
-router.get('/token-kadaluarsa', authController.getTokenKadaluarsa);
+router.get('/login', isGuest, authController.getLogin);
 
-router.get('/login', authController.getLogin);
+router.post('/login', isGuest, [
+  body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
+      .isEmail().withMessage('Masukkan email yang valid!')
+      .custom(async (value, {req}) => {
+        const user = await User.findOne({where: {email: value}});// cari user di database
+        if (!user) {// jika user tidak ketemu
+          return Promise.reject('Email belum terdaftar!');
+        }
+      })
+      .custom(async (value, {req}) => {
+        const user = await User.findOne({where: {email: value}});// cari user di database
+        if (user.status === 'unverified') {// jika email user belum diverifikasi
+          return Promise.reject('Email belum diverifikasi!');
+        }
+      }).trim(), // .trim() agar semua whitespace (spasi/tab) yang ada di akhir dihapus
+  body('password').isLength({min: 1}).withMessage('Form tidak boleh kosong!'),
+], authController.postLogin);
 
-router.get('/register', authController.getRegister);
+router.get('/logout', authController.getLogout);
 
-router.post('/register', [
+router.post('/logout', authController.postLogout);
+
+router.get('/register', isGuest, authController.getRegister);
+
+router.post('/register', isGuest, [
   body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
       .isEmail().withMessage('Masukkan email yang valid!')
       .custom(async (value, {req}) => {
@@ -33,11 +55,11 @@ router.post('/register', [
       }),
 ], authController.postRegister);
 
-router.get('/verifikasi-berhasil', authController.getVerifikasiBerhasil);
+router.get('/verifikasi-berhasil', isGuest, authController.getVerifikasiBerhasil);
 
-router.get('/form-verifikasi-email', authController.getFormVerifikasiEmail);
+router.get('/form-verifikasi-email', isGuest, authController.getFormVerifikasiEmail);
 
-router.post('/form-verifikasi-email',
+router.post('/form-verifikasi-email', isGuest,
     body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
         .isEmail().withMessage('Masukkan email yang valid!')
         .custom(async (value, {req}) => {
@@ -55,13 +77,13 @@ router.post('/form-verifikasi-email',
         }).trim()
     , authController.postFormVerifikasiEmail);
 
-router.get('/verifikasi-email/:token', authController.getVerifikasiEmail);
+router.get('/verifikasi-email/:token', isGuest, authController.getVerifikasiEmail, errorController.get404);
 
-router.post('/verifikasi-email', authController.postVerifikasiEmail);
+router.post('/verifikasi-email', isGuest, authController.postVerifikasiEmail, errorController.get404);
 
-router.get('/form-reset-password', authController.getResetForm);
+router.get('/form-reset-password', isGuest, authController.getResetForm);
 
-router.post('/form-reset-password',
+router.post('/form-reset-password', isGuest,
     body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
         .isEmail().withMessage('Masukkan email yang valid!')
         .custom(async (value, {req}) => {
@@ -80,10 +102,10 @@ router.post('/form-reset-password',
         }).trim()
     , authController.postResetForm);
 
-router.get('/reset-password/:token', authController.getReset);
+router.get('/reset-password/:token', isGuest, authController.getReset, errorController.get404);
 
-router.post('/reset-password',
+router.post('/reset-password', isGuest,
     body('password').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
-    , authController.postReset);
+    , authController.postReset, errorController.get404);
 
 module.exports = router;

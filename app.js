@@ -17,14 +17,16 @@ const app = express();
 
 const myStore = new SequelizeStore({
   db: sequelize,
-  checkExpirationInterval: 10 * 60 * 1000, // expired session akan dihapus dari database (dalam milliseconds)
+  checkExpirationInterval: 1000*60*10, // expired session akan dihapus dari database (dalam milliseconds)
 });
 const csrfProtection = csrf();
 
-app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.set('view engine', 'ejs');// registrasi template engine
+app.set('views', 'views');// lokasi file yang ingin dirender oleh template engine
 
 app.use(bodyParser.urlencoded({extended: false}));
+// middleware bodyParser.urlencoded() memparsing body request sebelum menjalankan next()
+// bodyparser akan mengambil data dari form dan datanya bisa diakses dari req.body.formName
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -36,12 +38,30 @@ app.use(
     }),
 );
 myStore.sync();
-app.use(csrfProtection);
-app.use(flash());
+app.use(csrfProtection);// csrfProtection berguna untuk melindungi setiap request (selain get) dari CSRF Attack
+// csrf didaftarkan setelah session karena csrf akan menggunakan session tersebut
+app.use(flash());// flash didaftarkan setelah session karena flash akan menggunakan session tersebut
 
+app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.propertyBaru bisa digunakan di semua routes
+  try {
+    if (req.session.user) {// user dalam keadaan logged in
+      const user = await User.findOne({where: {id: req.session.user.id}});// cari user di database
+      req.loggedInUser = user;
+      next();
+    } else {// user tidak dalam keadaan logged in
+      req.loggedInUser = null;
+      next();
+    }
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
+});
 
 app.use((req, res, next) => {// supaya variable bisa dipakai di semua render views
-  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.isLoggedIn = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
 });
@@ -90,13 +110,18 @@ app.use(async (req, res, next) => {// penghapus otomatis
   next();
 });
 
+/**
+authRoutes diletakkan di atas mainRoutes supaya routes semisal /login, /register, dll bisa ditemukan (tidak 404)
+karena di mainRoutes ada controller getRedirect yang mana kalo /:parameter tidak ada di database maka akan
+menjadi 404. Di express, routes /spesifik harus diletakkan sebelum routes /:parameter.
+ */
 app.use(authRoutes);
 app.use(mainRoutes);
 
 app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
-app.use((error, req, res, next) => {
+app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
   // res.redirect('/500');
   const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
   res.status(statusCode).render('500', {

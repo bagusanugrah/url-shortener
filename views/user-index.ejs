@@ -1,0 +1,62 @@
+<%- include('./includes/top.ejs') %>
+    <% if(successMessage){ %>
+        <%- include('./includes/components/alert/success.ejs') %>
+    <% } %>
+    <% if(problemMessage){ %>
+        <%- include('./includes/components/alert/problem.ejs') %>
+    <% } %>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form class="mb-4" action="/" method="POST">
+                <div class="mb-3">
+                    <input class="form-control" name="url" id="url" type="text" placeholder="http://apa-aja.com/pages/mTnVdoYXCoN9ElxrsEDbdoY7y0sPvyUubgYGY78guYuGHbfjI6F78buG7G">
+                </div>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary" type="submit">Pendekin URL</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col">Link</th>
+                    <th scope="col" class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row" class="text-center">1</th>
+                    <td><a href="#" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="http://apa-aja.com/pages/mTnVdoYXCoN9ElxrsEDbdoY7y0sPvyUubgYGY78guYuGHbfjI6F78buG7G">http://pendekin.link/AxtY7b</a></td>
+                    <td class="text-center">
+                        <a href="edit.html" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                            <i data-feather="edit-2"></i>
+                        </a>
+                        <form action="" method="" style="display: inline;">
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                <i data-feather="trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
+    <div class="mb-4">
+        <nav class="d-flex justify-content-center" aria-label="...">
+            <ul class="shadow-lg pagination pagination-sm">
+              <li class="page-item active" aria-current="page">
+                <span class="page-link">1</span>
+              </li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+            </ul>
+          </nav>
+    </div>
+<%- include('./includes/bottom.ejs') %>
+                                
