@@ -3,12 +3,27 @@ const {GuestShortenedUrl} = require('../models');
 
 const {validationResult} = require('express-validator/check');
 
+exports.isGuest = (req, res, next) => {
+  if (req.loggedInUser) {// jika user logged in
+    return res.redirect('/');
+  }
+  next();
+};
+
 exports.getIndex = (req, res, next) => {
-  res.render('index', {
-    pageTitle: 'URLmu.id | URL shortener buatan orang indo',
-    problemMessage: '',
-    successMessage: '',
-  });
+  if (req.loggedInUser) {// jika user logged in
+    res.render('user-index', {
+      pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+      problemMessage: '',
+      successMessage: '',
+    });
+  } else {// jika user tidak logged in
+    res.render('index', {
+      pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+      problemMessage: '',
+      successMessage: '',
+    });
+  }
 };
 
 exports.postShorten = async (req, res, next) => {
@@ -76,9 +91,7 @@ exports.getRedirect = async (req, res, next) => {
     //   res.redirect(shortened.url);
     // }
     else {
-      return res.status(404).render('404', {
-        pageTitle: 'Halaman Tidak Ditemukan!',
-      });
+      return next();
     }
   } catch (error) {
     console.log(error);

@@ -15,12 +15,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-exports.getTokenKadaluarsa = (req, res, next) => {
-  res.render('token-kadaluarsa', {
-    pageTitle: 'Token Sudah Kadaluarsa',
-  });
-};
-
 exports.getLogin = (req, res, next) => {
   let successMessage = req.flash('success');
 
@@ -34,7 +28,78 @@ exports.getLogin = (req, res, next) => {
     pageTitle: 'Login',
     problemMessage: '',
     successMessage,
+    oldInput: {email: ''},
   });
+};
+
+exports.postLogin = async (req, res, next) => {
+  try {
+    const email = req.body.email.toLowerCase();// ambil email dari form
+    const password = req.body.password;// ambil password dari form
+    const user = await User.findOne({where: {email}});// cari user di database
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
+      return res.status(422).render('login', {
+        pageTitle: 'Login',
+        problemMessage: validationErrors.array()[0].msg,
+        successMessage: '',
+        oldInput: {email},
+      });
+    }
+
+    const doMatch = await bcrypt.compare(password, user.password);// mengecek apakah inputan password sama dengan yang di database
+
+    if (doMatch) {// jika inputan password sama dengan yang di database
+      // perbarui masa tenggang penghapusan user
+      user.expiredAt = Date.now() + (1000*3600*24);// (1000*3600*24*30*6)
+      await user.save();
+
+      // dimasukkan ke session supaya bisa digunakan di setiap request baru
+      req.session.user = user;// untuk digunakan di app.js
+      req.session.isLoggedIn = true;// untuk digunakan di app.js
+      req.session.save((error) => {
+        if (error) {// jika terjadi error
+          console.log(error);
+          throw new Error('TERJADI KESALAHAN LOGIN');
+        }
+        res.redirect('/');// jika tidak terjadi error
+      });
+    } else {// jika inputan password tidak sama dengan yang di database
+      res.render('login', {
+        pageTitle: 'Login',
+        problemMessage: 'Password yang anda masukkan salah!',
+        successMessage: '',
+        oldInput: {email},
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
+};
+
+exports.getLogout = (req, res, next) => {// supaya logout tidak bisa diraih dengan get
+  res.redirect('/');
+};
+
+exports.postLogout = (req, res, next) => {
+  try {
+    req.session.destroy((error) => {
+      if (error) {// jika terjadi error
+        console.log(error);
+        throw new Error('TERJADI KESALAHAN LOGOUT');
+      }
+      res.redirect('/');
+    });// session (yg aktif) akan dihapus dari database dan req.session.propertyTerkait menjadi undefined
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
 };
 
 exports.getRegister = (req, res, next) => {
@@ -197,7 +262,7 @@ exports.getVerifikasiEmail = async (req, res, next) => {
     const tokenData = await EmailVerification.findOne({where: {token}});// cari token di database
 
     if (!tokenData) {// jika token tidak ketemu
-      return res.redirect('/token-kadaluarsa');
+      return next();
     }
 
     res.render('verifikasi-email', {
@@ -218,7 +283,7 @@ exports.postVerifikasiEmail = async (req, res, next) => {
     const tokenData = await EmailVerification.findOne({where: {token}});// cari token di database
 
     if (!tokenData) {// jika token tidak ketemu
-      return res.redirect('/token-kadaluarsa');
+      return next();
     }
 
     const user = await User.findOne({where: {email: tokenData.email}});// cari user di database
@@ -321,7 +386,7 @@ exports.getReset = async (req, res, next) => {
     const tokenData = await PasswordReset.findOne({where: {token}});// cari token di database
 
     if (!tokenData) {// jika token tidak ketemu
-      return res.redirect('/token-kadaluarsa');
+      return next();
     }
 
     if (problemMessage.length > 0) {
@@ -352,7 +417,7 @@ exports.postReset = async (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if (!tokenData) {// jika token tidak ketemu
-      return res.redirect('/token-kadaluarsa');
+      return next();
     }
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi

@@ -3,6 +3,7 @@ const express = require('express');
 const {body} = require('express-validator/check');
 
 const mainController = require('../controllers/main');
+const errorController = require('../controllers/error');
 
 const router = express.Router();
 
@@ -14,6 +15,6 @@ router.post('/', body('url').isLength({min: 1}).withMessage('Form tidak boleh ko
 
 router.get('/report-bug', mainController.getReportBug);
 
-router.get('/:key', mainController.getRedirect);
+router.get('/:key', mainController.getRedirect, errorController.get404);
 
 module.exports = router;
