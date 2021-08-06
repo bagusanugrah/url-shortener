@@ -36,7 +36,7 @@
                         <th scope="row" class="text-center"><%= nomor %></th>
                         <td><a href="http://localhost:5000/<%= shortenedUrls[i].parameter %>" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= shortenedUrls[i].url %>">http://localhost:5000/<%= shortenedUrls[i].parameter %></a></td>
                         <td class="text-center">
-                            <a href="edit.html" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                            <a href="http://localhost:5000/edit/<%= shortenedUrls[i].parameter %>" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                 <i data-feather="edit-2"></i>
                             </a>
                             <form action="/delete" method="POST" style="display: inline;">

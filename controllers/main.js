@@ -4,10 +4,17 @@ const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 const {validationResult} = require('express-validator/check');
 
 exports.isGuest = (req, res, next) => {
-  if (req.loggedInUser) {// jika user logged in
+  if (req.isLoggedIn) {// jika user logged in
     return res.redirect('/');
   }
-  next();
+  next();// lanjut ke middleware/controller berikutnya
+};
+
+exports.isAuth = (req, res, next) => {
+  if (req.isLoggedIn) {// jika user logged in
+    return next();// lanjut ke middleware/controller berikutnya
+  }
+  res.redirect('/login');
 };
 
 exports.getIndex = async (req, res, next) => {
@@ -117,13 +124,70 @@ exports.postShorten = async (req, res, next) => {
   }
 };
 
+exports.getEditUrl = async (req, res, next) => {
+  try {
+    const parameter = req.params.key;// ambil parameter dari form untuk oldInput
+    const shortenedUrl = await ShortenedUrl.findOne({where: {parameter}});// cari url di database
+
+    if (!shortenedUrl) {// jika url tidak ketemu
+      return next();// lanjut ke middleware/controller berikutnya
+    }
+
+    if (shortenedUrl.userId !== req.loggedInUser.id) {// jika route ini dibuka oleh bukan pemiliknya
+      return res.redirect('/');
+    }
+
+    res.render('edit-url', {
+      pageTitle: 'Edit URL',
+      url: shortenedUrl.url,
+      oldInput: {parameter}, // untuk oldInput
+      problemMessage: '',
+      parameter, // untuk form action
+    });
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
+};
+
+exports.postEditUrl = async (req, res, next) => {
+  try {
+    const inputParam = req.body.inputParam;// ambil parameter dari form untuk oldInput
+    const parameter = req.body.hiddenParam;// ambil parameter dari hidden input untuk form action
+    const shortenedUrl = await ShortenedUrl.findOne({where: {parameter}});// cari url di database
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
+      return res.status(422).render('edit-url', {
+        pageTitle: 'Edit URL',
+        url: shortenedUrl.url,
+        oldInput: {parameter: inputParam}, // untuk oldInput
+        problemMessage: validationErrors.array()[0].msg,
+        parameter, // untuk form action
+      });
+    }
+
+    shortenedUrl.parameter = inputParam;
+    await shortenedUrl.save();
+
+    req.flash('success', 'URL berhasil diperbarui!');
+    res.redirect('/');
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
+};
+
 exports.postDeleteUrl = async (req, res, next) => {
   try {
     const urlId = req.body.urlId;// ambil urlId dari hidden input
 
     await ShortenedUrl.destroy({where: {id: urlId}});// hapus url dari database
 
-    req.flash('success', 'URL berhasil dihapus!');
     res.redirect('/');
   } catch (error) {
     console.log(error);
