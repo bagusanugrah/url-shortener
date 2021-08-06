@@ -1,5 +1,5 @@
 const {nanoid} = require('nanoid');
-const {GuestShortenedUrl} = require('../models');
+const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 
 const {validationResult} = require('express-validator/check');
 
@@ -10,52 +10,92 @@ exports.isGuest = (req, res, next) => {
   next();
 };
 
-exports.getIndex = (req, res, next) => {
-  if (req.loggedInUser) {// jika user logged in
-    res.render('user-index', {
-      pageTitle: 'URLmu.id | URL shortener buatan orang indo',
-      problemMessage: '',
-      successMessage: '',
-    });
-  } else {// jika user tidak logged in
-    res.render('index', {
-      pageTitle: 'URLmu.id | URL shortener buatan orang indo',
-      problemMessage: '',
-      successMessage: '',
-    });
+exports.getIndex = async (req, res, next) => {
+  try {
+    if (req.isLoggedIn) {// jika user logged in
+      const shortenedUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});
+      let successMessage = req.flash('success');
+
+      if (successMessage.length > 0) {
+        successMessage = successMessage[0];
+      } else {
+        successMessage = '';
+      }
+
+      res.render('user-index', {
+        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+        problemMessage: '',
+        successMessage,
+        shortenedUrls,
+      });
+    } else {// jika user tidak logged in
+      res.render('index', {
+        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+        problemMessage: '',
+        successMessage: '',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
 exports.postShorten = async (req, res, next) => {
   try {
-    const url = req.body.url;
-    let parameter = nanoid(6);
+    const url = req.body.url;// ambil url dari form
+    let parameter = nanoid(6);// buat random parameter baru
     const expiredAt = Date.now() + 30000;// (3600000*24*3)
     let isUnavailable = true;
     const validationErrors = validationResult(req);
+    const renderPage = req.isLoggedIn ? 'user-index' : 'index';// cek apakah user logged in atau tidak
 
-    if (!validationErrors.isEmpty()) {
-      return res.render('index', {
-        pageTitle: 'Pendekin.Link | Url shortener buatan orang indo',
+    if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
+      const shortenedUrls = req.isLoggedIn ?
+      await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}}) : null;
+      return res.status(422).render(renderPage, {
+        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
+        shortenedUrls,
       });
     }
 
-    while (isUnavailable) {
-      const guestUrl = await GuestShortenedUrl.findOne({where: {parameter}});
-      // const url = await ShortenedUrl.findOne({where: {parameter}});
+    while (isUnavailable) {// cek apakah random parameter ada di database
+      const guestUrl = await GuestShortenedUrl.findOne({where: {parameter}});// cari random paramater di database
+      const url = await ShortenedUrl.findOne({where: {parameter}});// cari random parameter di database
 
-      if (!guestUrl) {// !guestUrl || !url
-        isUnavailable = false;
-      } else {
-        parameter = nanoid(6);
+      /**
+       Keterangan:
+       guestUrl itu untuk user yang tidak logged in dan url itu untuk user yang logged in
+       */
+
+      if (!guestUrl && !url) {// jika random parameter tidak ada di database
+        isUnavailable = false;// tidak usah bikin random parameter baru
+      } else {// jika random parameter ada di database
+        parameter = nanoid(6);// buat random parameter baru
       }
     }
 
+    if (req.isLoggedIn) {// jika user logged in
+      await ShortenedUrl.create({url, parameter, userId: req.loggedInUser.id});// simpan URL baru dalam database
+    } else {// jika user tidak logged in
+      await GuestShortenedUrl.create({url, parameter, expiredAt});// simpan URL baru dalam database
+    }
 
-    await GuestShortenedUrl.create({url, parameter, expiredAt});
-
+    const shortenedUrls = req.isLoggedIn ?
+    await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}}) : null;
+    if (req.isLoggedIn) {// jika user logged in
+      return res.render('user-index', {
+        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+        problemMessage: '',
+        successMessage: `URL berhasil dibuat secara random, URL baru ada di paling atas. Anda bisa mengedit URL 
+        dengan mengklik tombol pensil warna kuning dan menghapus URL dengan mengklik tombol trash warna merah.`,
+        shortenedUrls,
+      });
+    }
     res.render('index', {
       pageTitle: 'URLmu.id | URL shortener buatan orang indo',
       problemMessage: '',
@@ -67,7 +107,24 @@ exports.postShorten = async (req, res, next) => {
       URL ini dibuat secara random dan akan dihapus secara otomatis dari database jika selama 3 hari tidak digunakan. Login terlebih dahulu agar anda bisa 
       membuat custom URL anda sendiri dan agar URL menjadi permanen.
       `,
+      shortenedUrls,
     });
+  } catch (error) {
+    console.log(error);
+    const err = new Error(error);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
+};
+
+exports.postDeleteUrl = async (req, res, next) => {
+  try {
+    const urlId = req.body.urlId;// ambil urlId dari hidden input
+
+    await ShortenedUrl.destroy({where: {id: urlId}});// hapus url dari database
+
+    req.flash('success', 'URL berhasil dihapus!');
+    res.redirect('/');
   } catch (error) {
     console.log(error);
     const err = new Error(error);
@@ -78,20 +135,18 @@ exports.postShorten = async (req, res, next) => {
 
 exports.getRedirect = async (req, res, next) => {
   try {
-    const parameter = req.params.key;
-    const guestShortened = await GuestShortenedUrl.findOne({where: {parameter}});// untuk guest
-    // const shortened = await ShortenedUrl.findOne({where: {parameter}});// untuk user
+    const parameter = req.params.key;// ambil parameter
+    const guestShortened = await GuestShortenedUrl.findOne({where: {parameter}});// cari paramater di database
+    const shortened = await ShortenedUrl.findOne({where: {parameter}});// cari paramater di database
 
-    if (guestShortened) {
+    if (guestShortened) {// jika paramater ketemu di guestShortened
       res.redirect(guestShortened.url);
-      guestShortened.expiredAt = Date.now() + 30000;// (3600000*24*3)
-      await guestShortened.save();
-    }
-    // else if (shortened) {
-    //   res.redirect(shortened.url);
-    // }
-    else {
-      return next();
+      guestShortened.expiredAt = Date.now() + 30000;// (3600000*24*3) perbarui masa tenggang penghapusan url
+      await guestShortened.save();// perbarui data url
+    } else if (shortened) {// jika paramater ketemu di shortened
+      res.redirect(shortened.url);
+    } else {// jika parameter tidak ada di database
+      return next();// lanjut ke middleware/controller berikutnya
     }
   } catch (error) {
     console.log(error);
