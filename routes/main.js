@@ -1,9 +1,12 @@
+/* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable new-cap */
 const express = require('express');
-const {body} = require('express-validator/check');
+const {body} = require('express-validator/check');// request body validator
+const validator = require('validator');// string validator
 
 const mainController = require('../controllers/main');
 const errorController = require('../controllers/error');
+const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 
 const router = express.Router();
 
@@ -12,6 +15,26 @@ router.get('/', mainController.getIndex);
 router.post('/', body('url').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
     .isURL().withMessage('Masukkan URL yang valid!').trim()
 , mainController.postShorten);
+
+router.get('/edit/:key', mainController.isAuth, mainController.getEditUrl, errorController.get404);
+
+router.post('/edit/:key', body('inputParam').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
+    .custom((value, {req}) => {
+      if (validator.isBase64(value, {urlSafe: true})) {
+        return true;// lolos validasi
+      }
+      throw new Error(`Inputan tidak valid! Karakter yang boleh digunakan hanya huruf (A-Z/a-z), angka (0-9), 
+      tanda strip (-), dan underscore (_)`);// tidak lolos validasi
+    })
+    .custom(async (value, {req}) => {
+      const url = await ShortenedUrl.findOne({where: {parameter: value}});// cari parameter di database
+      const guestUrl = await GuestShortenedUrl.findOne({where: {parameter: value}});// cari parameter di database
+
+      if (value !== req.body.hiddenParam && url || guestUrl) {// jika parameter ada di database
+        return Promise.reject(`${value} sudah digunakan!`);
+      }
+    })
+, mainController.postEditUrl);
 
 router.post('/delete', mainController.postDeleteUrl);
 

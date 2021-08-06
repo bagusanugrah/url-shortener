@@ -1,0 +1,34 @@
+<%- include('./includes/top.ejs') %>
+    <% if(problemMessage){ %>
+        <%- include('./includes/components/alert/problem.ejs') %>
+    <% } %>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form class="mb-4" action="/edit/<%= parameter %>" method="POST">
+                <div class="row gx-1 mb-3">
+                    <input class="form-control" id="url" type="text" value="<%= url %>" disabled>
+                </div>
+                <div class="row gx-3">
+                    <div class="col-md-4 d-flex align-items-center justify-content-end">
+                        <!-- Form Group (first name)-->
+                        <div class="mb-3">
+                            <p style="margin: 0; padding: 0;">http://urlmu.id/</p>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <!-- Form Group (last name)-->
+                        <div class="mb-3">
+                            <input class="form-control" name="inputParam" type="text" value="<%= oldInput.parameter %>">
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" name="hiddenParam" value="<%= parameter %>"><!-- Untuk form action -->
+                    <button class="btn btn-primary" type="submit">Update URL</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<%- include('./includes/bottom.ejs') %>
+                                
