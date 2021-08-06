@@ -47,9 +47,11 @@ app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.prop
     if (req.session.user) {// user dalam keadaan logged in
       const user = await User.findOne({where: {id: req.session.user.id}});// cari user di database
       req.loggedInUser = user;
+      req.isLoggedIn = req.session.isLoggedIn;
       next();
     } else {// user tidak dalam keadaan logged in
       req.loggedInUser = null;
+      req.isLoggedIn = false;
       next();
     }
   } catch (error) {
@@ -61,7 +63,7 @@ app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.prop
 });
 
 app.use((req, res, next) => {// supaya variable bisa dipakai di semua render views
-  res.locals.isLoggedIn = req.session.isLoggedIn;
+  res.locals.isLoggedIn = req.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
 });

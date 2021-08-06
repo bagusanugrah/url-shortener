@@ -20,31 +20,43 @@
     </div>
     <div class="card mb-4">
         <div class="card-body">
+            <% if (shortenedUrls.length > 0) { %>
+              <% let nomor = 1; %>
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                   <tr>
                     <th scope="col" class="text-center">#</th>
-                    <th scope="col">Link</th>
+                    <th scope="col">URL</th>
                     <th scope="col" class="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row" class="text-center">1</th>
-                    <td><a href="#" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="http://apa-aja.com/pages/mTnVdoYXCoN9ElxrsEDbdoY7y0sPvyUubgYGY78guYuGHbfjI6F78buG7G">http://pendekin.link/AxtY7b</a></td>
-                    <td class="text-center">
-                        <a href="edit.html" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                            <i data-feather="edit-2"></i>
-                        </a>
-                        <form action="" method="" style="display: inline;">
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
-                                <i data-feather="trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                  </tr>
+                    <% for (let i = shortenedUrls.length-1; i >= 0; i--) { %>
+                    <tr>
+                        <th scope="row" class="text-center"><%= nomor %></th>
+                        <td><a href="http://localhost:5000/<%= shortenedUrls[i].parameter %>" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= shortenedUrls[i].url %>">http://localhost:5000/<%= shortenedUrls[i].parameter %></a></td>
+                        <td class="text-center">
+                            <a href="edit.html" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                <i data-feather="edit-2"></i>
+                            </a>
+                            <form action="/delete" method="POST" style="display: inline;">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <input type="hidden" name="urlId" value="<%= shortenedUrls[i].id %>">
+                                <button class="btn btn-sm btn-danger" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                    <i data-feather="trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% nomor++; %>
+                    <% } %>
                 </tbody>
               </table>
+              <% } else { %>
+                <div class="text-center">
+                    <p style="margin: 0; padding: 0;">Tidak ada URL.</p>
+                </div>
+              <% } %>
         </div>
     </div>
     <div class="mb-4">

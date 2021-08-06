@@ -81,10 +81,6 @@ exports.postLogin = async (req, res, next) => {
   }
 };
 
-exports.getLogout = (req, res, next) => {// supaya logout tidak bisa diraih dengan get
-  res.redirect('/');
-};
-
 exports.postLogout = (req, res, next) => {
   try {
     req.session.destroy((error) => {
@@ -158,12 +154,6 @@ exports.postRegister = async (req, res, next) => {
     err.httpStatusCode = 500;
     return next(err);
   }
-};
-
-exports.getVerifikasiBerhasil = (req, res, next) => {
-  res.render('verifikasi-berhasil', {
-    pageTitle: 'Email Berhasil Diverifikasi!',
-  });
 };
 
 exports.getFormVerifikasiEmail = (req, res, next) => {
@@ -296,7 +286,9 @@ exports.postVerifikasiEmail = async (req, res, next) => {
     await user.save();// perbarui data user
     await tokenData.destroy();// menghapus token dari database
 
-    res.redirect('/verifikasi-berhasil');
+    res.render('verifikasi-berhasil', {
+      pageTitle: 'Email Berhasil Diverifikasi!',
+    });
   } catch (error) {
     console.log(error);
     const err = new Error(error);
@@ -421,8 +413,11 @@ exports.postReset = async (req, res, next) => {
     }
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      req.flash('error', validationErrors.array()[0].msg);
-      return res.redirect(`/reset-password/${token}`);
+      return res.status(422).render('reset-password', {
+        pageTitle: 'Reset Password',
+        problemMessage: validationErrors.array()[0].msg,
+        token,
+      });
     }
 
     const user = await User.findOne({where: {email: tokenData.email}});// cari user di database
@@ -431,8 +426,9 @@ exports.postReset = async (req, res, next) => {
     await user.save();// perbarui data user
     await tokenData.destroy();// hapus token dari database
 
-    req.flash('success', 'Password berhasil diganti!');
-    res.redirect('/login');
+    res.render('reset-berhasil', {
+      pageTitle: 'Password berhasil diganti!',
+    });
   } catch (error) {
     console.log(error);
     const err = new Error(error);

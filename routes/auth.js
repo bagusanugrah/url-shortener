@@ -30,8 +30,6 @@ router.post('/login', isGuest, [
   body('password').isLength({min: 1}).withMessage('Form tidak boleh kosong!'),
 ], authController.postLogin);
 
-router.get('/logout', authController.getLogout);
-
 router.post('/logout', authController.postLogout);
 
 router.get('/register', isGuest, authController.getRegister);
@@ -54,8 +52,6 @@ router.post('/register', isGuest, [
         return true;
       }),
 ], authController.postRegister);
-
-router.get('/verifikasi-berhasil', isGuest, authController.getVerifikasiBerhasil);
 
 router.get('/form-verifikasi-email', isGuest, authController.getFormVerifikasiEmail);
 
@@ -104,7 +100,7 @@ router.post('/form-reset-password', isGuest,
 
 router.get('/reset-password/:token', isGuest, authController.getReset, errorController.get404);
 
-router.post('/reset-password', isGuest,
+router.post('/reset-password/:token', isGuest,
     body('password').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
     , authController.postReset, errorController.get404);
 

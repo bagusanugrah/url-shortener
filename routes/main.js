@@ -13,6 +13,8 @@ router.post('/', body('url').isLength({min: 1}).withMessage('Form tidak boleh ko
     .isURL().withMessage('Masukkan URL yang valid!').trim()
 , mainController.postShorten);
 
+router.post('/delete', mainController.postDeleteUrl);
+
 router.get('/report-bug', mainController.getReportBug);
 
 router.get('/:key', mainController.getRedirect, errorController.get404);
