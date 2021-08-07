@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable new-cap */
 const express = require('express');
-const {body} = require('express-validator/check');
+const {body} = require('express-validator');
 
 const authController = require('../controllers/auth');
 const {isGuest} = require('../controllers/main');
@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/login', isGuest, authController.getLogin);
 
-router.post('/login', isGuest, [
+router.post('/login', [
   body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
       .isEmail().withMessage('Masukkan email yang valid!')
       .custom(async (value, {req}) => {
@@ -34,7 +34,7 @@ router.post('/logout', authController.postLogout);
 
 router.get('/register', isGuest, authController.getRegister);
 
-router.post('/register', isGuest, [
+router.post('/register', [
   body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
       .isEmail().withMessage('Masukkan email yang valid!')
       .custom(async (value, {req}) => {
@@ -55,7 +55,7 @@ router.post('/register', isGuest, [
 
 router.get('/form-verifikasi-email', isGuest, authController.getFormVerifikasiEmail);
 
-router.post('/form-verifikasi-email', isGuest,
+router.post('/form-verifikasi-email',
     body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
         .isEmail().withMessage('Masukkan email yang valid!')
         .custom(async (value, {req}) => {
@@ -75,11 +75,11 @@ router.post('/form-verifikasi-email', isGuest,
 
 router.get('/verifikasi-email/:token', isGuest, authController.getVerifikasiEmail, errorController.get404);
 
-router.post('/verifikasi-email', isGuest, authController.postVerifikasiEmail, errorController.get404);
+router.post('/verifikasi-email', authController.postVerifikasiEmail, errorController.get404);
 
 router.get('/form-reset-password', isGuest, authController.getResetForm);
 
-router.post('/form-reset-password', isGuest,
+router.post('/form-reset-password',
     body('email').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
         .isEmail().withMessage('Masukkan email yang valid!')
         .custom(async (value, {req}) => {
@@ -100,7 +100,7 @@ router.post('/form-reset-password', isGuest,
 
 router.get('/reset-password/:token', isGuest, authController.getReset, errorController.get404);
 
-router.post('/reset-password/:token', isGuest,
+router.post('/reset-password/:token',
     body('password').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
     , authController.postReset, errorController.get404);
 

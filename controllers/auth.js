@@ -1,5 +1,5 @@
 const {nanoid} = require('nanoid');
-const {validationResult} = require('express-validator/check');
+const {validationResult} = require('express-validator');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 
@@ -109,6 +109,8 @@ exports.getRegister = (req, res, next) => {
 
 exports.postRegister = async (req, res, next) => {
   try {
+    let secondId = 'user-' + nanoid(16);// buat random secondId
+    let isAvailable = true;
     const email = req.body.email.toLowerCase();// ambil email dari form
     const password = req.body.password;// ambil password dari form
     const status = 'unverified';
@@ -125,9 +127,19 @@ exports.postRegister = async (req, res, next) => {
       });
     }
 
+    while (isAvailable) {// cek apakah random secondId ada di database
+      const user = await User.findOne({where: {secondId}});
+
+      if (user) {// jika random secondId ada di database
+        secondId = 'user-' + nanoid(16);// buat random secondId baru
+      } else {// jika random secondId tidak ada di database
+        isAvailable = false;// tidak usah buat random secondId baru
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);// mengenkripsi password
 
-    await User.create({email, password: hashedPassword, status, expiredAt});// membuat user baru
+    await User.create({secondId, email, password: hashedPassword, status, expiredAt});// membuat user baru
     await EmailVerification.create({token, email, expiredAt});// simpan token baru dalam database
 
     res.render('register', {

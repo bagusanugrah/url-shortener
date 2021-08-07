@@ -1,20 +1,13 @@
 const {nanoid} = require('nanoid');
 const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 
-const {validationResult} = require('express-validator/check');
+const {validationResult} = require('express-validator');
 
 exports.isGuest = (req, res, next) => {
   if (req.isLoggedIn) {// jika user logged in
     return res.redirect('/');
   }
   next();// lanjut ke middleware/controller berikutnya
-};
-
-exports.isAuth = (req, res, next) => {
-  if (req.isLoggedIn) {// jika user logged in
-    return next();// lanjut ke middleware/controller berikutnya
-  }
-  res.redirect('/login');
 };
 
 exports.getIndex = async (req, res, next) => {
@@ -53,9 +46,10 @@ exports.getIndex = async (req, res, next) => {
 exports.postShorten = async (req, res, next) => {
   try {
     const url = req.body.url;// ambil url dari form
-    let parameter = nanoid(6);// buat random parameter baru
+    let secondId = 'url-' + nanoid(16);// buat random secondId
+    let parameter = nanoid(6);// buat random parameter
     const expiredAt = Date.now() + 30000;// (3600000*24*3)
-    let isUnavailable = true;
+    let isAvailable = true;
     const validationErrors = validationResult(req);
     const renderPage = req.isLoggedIn ? 'user-index' : 'index';// cek apakah user logged in atau tidak
 
@@ -70,7 +64,20 @@ exports.postShorten = async (req, res, next) => {
       });
     }
 
-    while (isUnavailable) {// cek apakah random parameter ada di database
+    while (isAvailable) {// cek apakah random secondId ada di database
+      const guestUrl = await GuestShortenedUrl.findOne({where: {secondId}});
+      const url = await ShortenedUrl.findOne({where: {secondId}});
+
+      if (guestUrl || url) {// jika random secondId ada di database
+        secondId = 'url-' + nanoid(16);// buat random secondId baru
+      } else {// jika random secondId tidak ada di database
+        isAvailable = false;// tidak usah buat random secondId baru
+      }
+    }
+
+    isAvailable = true;
+
+    while (isAvailable) {// cek apakah random parameter ada di database
       const guestUrl = await GuestShortenedUrl.findOne({where: {parameter}});// cari random paramater di database
       const url = await ShortenedUrl.findOne({where: {parameter}});// cari random parameter di database
 
@@ -80,16 +87,16 @@ exports.postShorten = async (req, res, next) => {
        */
 
       if (!guestUrl && !url) {// jika random parameter tidak ada di database
-        isUnavailable = false;// tidak usah bikin random parameter baru
+        isAvailable = false;// tidak usah bikin random parameter baru
       } else {// jika random parameter ada di database
         parameter = nanoid(6);// buat random parameter baru
       }
     }
 
     if (req.isLoggedIn) {// jika user logged in
-      await ShortenedUrl.create({url, parameter, userId: req.loggedInUser.id});// simpan URL baru dalam database
+      await ShortenedUrl.create({secondId, url, parameter, userId: req.loggedInUser.id});// simpan URL baru dalam database
     } else {// jika user tidak logged in
-      await GuestShortenedUrl.create({url, parameter, expiredAt});// simpan URL baru dalam database
+      await GuestShortenedUrl.create({secondId, url, parameter, expiredAt});// simpan URL baru dalam database
     }
 
     const shortenedUrls = req.isLoggedIn ?
@@ -133,6 +140,10 @@ exports.getEditUrl = async (req, res, next) => {
       return next();// lanjut ke middleware/controller berikutnya
     }
 
+    if (!req.isLoggedIn) {// jika user tidak logged in
+      return res.redirect('/login');
+    }
+
     if (shortenedUrl.userId !== req.loggedInUser.id) {// jika route ini dibuka oleh bukan pemiliknya
       return res.redirect('/');
     }
@@ -172,7 +183,6 @@ exports.postEditUrl = async (req, res, next) => {
     shortenedUrl.parameter = inputParam;
     await shortenedUrl.save();
 
-    req.flash('success', 'URL berhasil diperbarui!');
     res.redirect('/');
   } catch (error) {
     console.log(error);
@@ -184,9 +194,9 @@ exports.postEditUrl = async (req, res, next) => {
 
 exports.postDeleteUrl = async (req, res, next) => {
   try {
-    const urlId = req.body.urlId;// ambil urlId dari hidden input
+    const secondId = req.body.urlId;// ambil secondId dari hidden input
 
-    await ShortenedUrl.destroy({where: {id: urlId}});// hapus url dari database
+    await ShortenedUrl.destroy({where: {secondId}});// hapus url dari database
 
     res.redirect('/');
   } catch (error) {
