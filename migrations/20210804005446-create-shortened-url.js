@@ -8,6 +8,11 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
+      secondId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
       url: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -15,6 +20,7 @@ module.exports = {
       parameter: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       userId: {
         type: DataTypes.INTEGER,

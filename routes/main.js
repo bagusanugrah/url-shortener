@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable new-cap */
 const express = require('express');
-const {body} = require('express-validator/check');// request body validator
+const {body} = require('express-validator');// request body validator
 const validator = require('validator');// string validator
 
 const mainController = require('../controllers/main');
@@ -16,7 +16,7 @@ router.post('/', body('url').isLength({min: 1}).withMessage('Form tidak boleh ko
     .isURL().withMessage('Masukkan URL yang valid!').trim()
 , mainController.postShorten);
 
-router.get('/edit/:key', mainController.isAuth, mainController.getEditUrl, errorController.get404);
+router.get('/edit/:key', mainController.getEditUrl, errorController.get404);
 
 router.post('/edit/:key', body('inputParam').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
     .custom((value, {req}) => {

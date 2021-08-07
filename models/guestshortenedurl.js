@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   GuestShortenedUrl.init({
+    secondId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     url: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -28,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     parameter: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         notNull: true,
         notEmpty: true,

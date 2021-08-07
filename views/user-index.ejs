@@ -41,7 +41,7 @@
                             </a>
                             <form action="/delete" method="POST" style="display: inline;">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <input type="hidden" name="urlId" value="<%= shortenedUrls[i].id %>">
+                                <input type="hidden" name="urlId" value="<%= shortenedUrls[i].secondId %>">
                                 <button class="btn btn-sm btn-danger" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
                                     <i data-feather="trash"></i>
                                 </button>
