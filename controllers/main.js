@@ -24,14 +24,14 @@ exports.getIndex = async (req, res, next) => {
       }
 
       res.render('user-index', {
-        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+        pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage,
         shortenedUrls,
       });
     } else {// jika user tidak logged in
       res.render('index', {
-        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+        pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage: '',
       });
@@ -55,7 +55,7 @@ exports.postShorten = async (req, res, next) => {
       const shortenedUrls = req.isLoggedIn ?
       await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}}) : null;
       return res.status(422).render(renderPage, {
-        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+        pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
         shortenedUrls,
@@ -101,7 +101,7 @@ exports.postShorten = async (req, res, next) => {
     await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}}) : null;
     if (req.isLoggedIn) {// jika user logged in
       return res.render('user-index', {
-        pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+        pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage: `URL berhasil dibuat secara random, URL baru ada di paling atas. Anda bisa mengedit URL 
         dengan mengklik tombol pensil warna kuning dan menghapus URL dengan mengklik tombol trash warna merah.`,
@@ -109,10 +109,10 @@ exports.postShorten = async (req, res, next) => {
       });
     }
     res.render('index', {
-      pageTitle: 'URLmu.id | URL shortener buatan orang indo',
+      pageTitle: `${req.domain} | URL shortener buatan orang indo`,
       problemMessage: '',
       successMessage: `
-      Berikut adalah URL anda <a href="http://localhost:5000/${parameter}" target="_blank">http://localhost:5000/${parameter}</a>  (besar kecil huruf berpengaruh)
+      Berikut adalah URL anda <a href="${req.address}/${parameter}" target="_blank">${req.address}/${parameter}</a>  (besar kecil huruf berpengaruh)
       <br>
       <br>
       Penting:<br>

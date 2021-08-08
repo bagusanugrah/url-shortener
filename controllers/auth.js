@@ -154,12 +154,12 @@ exports.postRegister = async (req, res, next) => {
 
     transporter.sendMail({
       to: email,
-      from: 'URLmu.id',
+      from: `${req.domain}`,
       subject: 'Verifikasi Email',
       html: `
       <h3>Klik link di bawah ini untuk verifikasi email anda</h3>
-      <p><a href="http://localhost:5000/verifikasi-email/${token}" target="_blank">
-        http://localhost:5000/verifikasi-email/${token}
+      <p><a href="${req.address}/verifikasi-email/${token}" target="_blank">
+        ${req.address}/verifikasi-email/${token}
       </a></p>
       `,
     });
@@ -210,12 +210,12 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
       transporter.sendMail({// kirimkan token yang ketemu tadi
         to: email,
-        from: 'URLmu.id',
+        from: `${req.domain}`,
         subject: 'Verifikasi Email',
         html: `
         <h3>Klik link di bawah ini untuk verifikasi email anda</h3>
-        <p><a href="http://localhost:5000/verifikasi-email/${token}" target="_blank">
-          http://localhost:5000/verifikasi-email/${token}
+        <p><a href="${req.address}/verifikasi-email/${token}" target="_blank">
+          ${req.address}/verifikasi-email/${token}
         </a></p>
         `,
       });
@@ -230,12 +230,12 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
       transporter.sendMail({// kirimkan token baru
         to: email,
-        from: 'URLmu.id',
+        from: `${req.domain}`,
         subject: 'Verifikasi Email',
         html: `
         <h3>Klik link di bawah ini untuk verifikasi email anda</h3>
-        <p><a href="http://localhost:5000/verifikasi-email/${token}" target="_blank">
-          http://localhost:5000/verifikasi-email/${token}
+        <p><a href="${req.address}/verifikasi-email/${token}" target="_blank">
+          ${req.address}/verifikasi-email/${token}
         </a></p>
         `,
       });
@@ -333,12 +333,12 @@ exports.postResetForm = async (req, res, next) => {
 
       transporter.sendMail({
         to: email,
-        from: 'URLmu.id',
+        from: `${req.domain}`,
         subject: 'Reset Password',
         html: `
         <h3>Klik link di bawah ini untuk ganti password anda</h3>
-        <p><a href="http://localhost:5000/reset-password/${token}" target="_blank">
-          http://localhost:5000/reset-password/${token}
+        <p><a href="${req.address}/reset-password/${token}" target="_blank">
+          ${req.address}/reset-password/${token}
         </a></p>
         `,
       });
@@ -349,12 +349,12 @@ exports.postResetForm = async (req, res, next) => {
 
       transporter.sendMail({
         to: email,
-        from: 'URLmu.id',
+        from: `${req.domain}`,
         subject: 'Reset Password',
         html: `
         <h3>Klik link di bawah ini untuk ganti password anda</h3>
-        <p><a href="http://localhost:5000/reset-password/${token}" target="_blank">
-          http://localhost:5000/reset-password/${token}
+        <p><a href="${req.address}/reset-password/${token}" target="_blank">
+          ${req.address}/reset-password/${token}
         </a></p>
         `,
       });
