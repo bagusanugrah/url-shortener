@@ -4,32 +4,37 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 
 const {User, EmailVerification, PasswordReset} = require('../models');
+const {error500} = require('../functions/errors');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
-    user: 'nadliomablo@gmail.com',
-    pass: 'Pcgame20072000',
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
   },
 });
 
 exports.getLogin = (req, res, next) => {
-  let successMessage = req.flash('success');
+  try {
+    let successMessage = req.flash('success');
 
-  if (successMessage.length > 0) {
-    successMessage = successMessage[0];
-  } else {
-    successMessage = '';
+    if (successMessage.length > 0) {
+      successMessage = successMessage[0];
+    } else {
+      successMessage = '';
+    }
+
+    res.render('login', {
+      pageTitle: 'Login',
+      problemMessage: '',
+      successMessage,
+      oldInput: {email: ''},
+    });
+  } catch (error) {
+    error500(error, next);
   }
-
-  res.render('login', {
-    pageTitle: 'Login',
-    problemMessage: '',
-    successMessage,
-    oldInput: {email: ''},
-  });
 };
 
 exports.postLogin = async (req, res, next) => {
@@ -74,10 +79,7 @@ exports.postLogin = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -91,20 +93,21 @@ exports.postLogout = (req, res, next) => {
       res.redirect('/');
     });// session (yg aktif) akan dihapus dari database dan req.session.propertyTerkait menjadi undefined
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
 exports.getRegister = (req, res, next) => {
-  res.render('register', {
-    pageTitle: 'Sign Up',
-    problemMessage: '',
-    successMessage: '',
-    oldInput: {email: ''},
-  });
+  try {
+    res.render('register', {
+      pageTitle: 'Sign Up',
+      problemMessage: '',
+      successMessage: '',
+      oldInput: {email: ''},
+    });
+  } catch (error) {
+    error500(error, next);
+  }
 };
 
 exports.postRegister = async (req, res, next) => {
@@ -161,27 +164,20 @@ exports.postRegister = async (req, res, next) => {
       `,
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
 exports.getFormVerifikasiEmail = (req, res, next) => {
-  let problemMessage = req.flash('error');
-
-  if (problemMessage.length > 0) {
-    problemMessage = problemMessage[0];
-  } else {
-    problemMessage = '';
+  try {
+    res.render('form-verifikasi-email', {
+      pageTitle: 'Form Verifikasi Email',
+      problemMessage: '',
+      successMessage: '',
+    });
+  } catch (error) {
+    error500(error, next);
   }
-
-  res.render('form-verifikasi-email', {
-    pageTitle: 'Form Verifikasi Email',
-    problemMessage,
-    successMessage: '',
-  });
 };
 
 exports.postFormVerifikasiEmail = async (req, res, next) => {
@@ -251,10 +247,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -272,10 +265,7 @@ exports.getVerifikasiEmail = async (req, res, next) => {
       token,
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -302,20 +292,21 @@ exports.postVerifikasiEmail = async (req, res, next) => {
       pageTitle: 'Email Berhasil Diverifikasi!',
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
 exports.getResetForm = (req, res, next) => {
-  res.render('form-reset-password', {
-    pageTitle: 'Reset Password',
-    problemMessage: '',
-    successMessage: '',
-    oldInput: '',
-  });
+  try {
+    res.render('form-reset-password', {
+      pageTitle: 'Reset Password',
+      problemMessage: '',
+      successMessage: '',
+      oldInput: '',
+    });
+  } catch (error) {
+    error500(error, next);
+  }
 };
 
 exports.postResetForm = async (req, res, next) => {
@@ -376,39 +367,26 @@ exports.postResetForm = async (req, res, next) => {
       oldInput: '',
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
 exports.getReset = async (req, res, next) => {
   try {
     const token = req.params.token;// ambil token dari parameter url
-    let problemMessage = req.flash('error');
     const tokenData = await PasswordReset.findOne({where: {token}});// cari token di database
 
     if (!tokenData) {// jika token tidak ketemu
       return next();
     }
 
-    if (problemMessage.length > 0) {
-      problemMessage = problemMessage[0];
-    } else {
-      problemMessage = '';
-    }
-
     res.render('reset-password', {
       pageTitle: 'Reset Password',
-      problemMessage,
+      problemMessage: '',
       token,
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -442,9 +420,6 @@ exports.postReset = async (req, res, next) => {
       pageTitle: 'Password berhasil diganti!',
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
