@@ -1,7 +1,8 @@
 const {nanoid} = require('nanoid');
-const {GuestShortenedUrl, ShortenedUrl} = require('../models');
-
 const {validationResult} = require('express-validator');
+
+const {GuestShortenedUrl, ShortenedUrl} = require('../models');
+const {error500} = require('../functions/errors');
 
 exports.isGuest = (req, res, next) => {
   if (req.isLoggedIn) {// jika user logged in
@@ -36,10 +37,7 @@ exports.getIndex = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -124,10 +122,7 @@ exports.postShorten = async (req, res, next) => {
       shortenedUrls,
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -156,10 +151,7 @@ exports.getEditUrl = async (req, res, next) => {
       parameter, // untuk form action
     });
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -185,10 +177,7 @@ exports.postEditUrl = async (req, res, next) => {
 
     res.redirect('/');
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -200,10 +189,7 @@ exports.postDeleteUrl = async (req, res, next) => {
 
     res.redirect('/');
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
@@ -223,17 +209,18 @@ exports.getRedirect = async (req, res, next) => {
       return next();// lanjut ke middleware/controller berikutnya
     }
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 };
 
 exports.getReportBug = (req, res, next) => {
-  res.render('report-bug', {
-    pageTitle: 'Laporkan Bug',
-    problemMessage: 'Upload gambar yang valid! (PNG/JPG/GIF)',
-    successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',
-  });
+  try {
+    res.render('report-bug', {
+      pageTitle: 'Laporkan Bug',
+      problemMessage: 'Upload gambar yang valid! (PNG/JPG/GIF)',
+      successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',
+    });
+  } catch (error) {
+    error500(error, next);
+  }
 };
