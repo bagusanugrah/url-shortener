@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config();// supaya bisa akses variabel dari file .env dengan process.env.VARIABEL
 const path = require('path');
 
 const express = require('express');
@@ -13,8 +13,10 @@ const {sequelize, GuestShortenedUrl, User, EmailVerification, PasswordReset} = r
 const mainRoutes = require('./routes/main');
 const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
+const {error500} = require('./functions/errors');
 
 const app = express();
+const port = process.env.PORT;
 
 const myStore = new SequelizeStore({
   db: sequelize,
@@ -46,6 +48,14 @@ app.use(flash());// flash didaftarkan setelah session karena flash akan mengguna
 
 app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.propertyBaru bisa digunakan di semua routes
   try {
+    const protocol = process.env.PROTOCOL;
+    const domain = process.env.DOMAIN;
+    const address = process.env.NODE_ENV === 'development' ?
+    `${protocol}://${domain}:${port}` : `${protocol}://${domain}`;
+
+    req.domain = domain;
+    req.address = address;
+
     if (req.session.user) {// user dalam keadaan logged in
       const user = await User.findOne({where: {id: req.session.user.id}});// cari user di database
       req.loggedInUser = user;
@@ -57,16 +67,15 @@ app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.prop
       next();
     }
   } catch (error) {
-    console.log(error);
-    const err = new Error(error);
-    err.httpStatusCode = 500;
-    return next(err);
+    error500(error, next);
   }
 });
 
 app.use((req, res, next) => {// supaya variable bisa dipakai di semua render views
   res.locals.isLoggedIn = req.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
+  res.locals.domain = req.domain;
+  res.locals.address = req.address;
   next();
 });
 
@@ -134,7 +143,7 @@ app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi 
   });
 });
 
-app.listen({port: 5000}, async () => {
+app.listen({port}, async () => {
   console.log('Server is running');
   await sequelize.sync();
   console.log('CONNECTED TO THE DATABASE');
