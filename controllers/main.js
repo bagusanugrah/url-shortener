@@ -77,11 +77,19 @@ exports.postShorten = async (req, res, next) => {
     const renderPage = req.isLoggedIn ? 'user-index' : 'index';// cek apakah user logged in atau tidak
 
     /* untuk paginasi */
-    const currentPage = +req.query.halaman ? +req.query.halaman : 1;// ambil nilai query dari url
-    const allUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});// ambil semua url dari database
-    const totalUrls = allUrls.length;// banyaknya url di database
-    const totalPages = Math.ceil(totalUrls/urlsPerPage);// banyaknya halaman, Math.ceil() melakukan pembulatan ke atas
-    const skipRows = (currentPage-1) * urlsPerPage;// banyaknya rows yang diskip dihitung dari row pertama
+    let currentPage;// ambil nilai query dari url
+    let allUrls;// ambil semua url dari database
+    let totalUrls;// banyaknya url di database
+    let totalPages;// banyaknya halaman, Math.ceil() melakukan pembulatan ke atas
+    let skipRows;// banyaknya rows yang diskip dihitung dari row pertama
+
+    if (req.isLoggedIn) {
+      currentPage = +req.query.halaman ? +req.query.halaman : 1;// ambil nilai query dari url
+      allUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});// ambil semua url dari database
+      totalUrls = allUrls.length;// banyaknya url di database
+      totalPages = Math.ceil(totalUrls/urlsPerPage);// banyaknya halaman, Math.ceil() melakukan pembulatan ke atas
+      skipRows = (currentPage-1) * urlsPerPage;// banyaknya rows yang diskip dihitung dari row pertama
+    }
     /* untuk paginasi */
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
@@ -167,7 +175,6 @@ exports.postShorten = async (req, res, next) => {
       URL ini dibuat secara random dan akan dihapus secara otomatis dari database jika selama 3 hari tidak digunakan. Login terlebih dahulu agar anda bisa 
       membuat custom URL anda sendiri dan agar URL menjadi permanen.
       `,
-      shortenedUrls,
     });
   } catch (error) {
     error500(error, next);
@@ -304,7 +311,7 @@ exports.postReportBug = async (req, res, next) => {
         to: 'bagus.anugrah71@gmail.com',
         from: `${req.domain}`,
         subject: `Laporan Bug - ${new Date().toISOString()}`,
-        html: `<p>${penjelasan}</p>`,
+        html: `<p><pre>${penjelasan}</pre></p>`,
         attachments: [
           {
             filename: screenshot.filename,
@@ -323,7 +330,7 @@ exports.postReportBug = async (req, res, next) => {
         to: 'bagus.anugrah71@gmail.com',
         from: `${req.domain}`,
         subject: `Laporan Bug - ${new Date().toISOString()}`,
-        html: `<p>${penjelasan}</p>`,
+        html: `<p><pre>${penjelasan}</pre></p>`,
       });
     }
 

@@ -55,7 +55,7 @@ router.post('/report-bug', [
     }
     throw new Error('Upload gambar yang valid! (png/jpg/jpeg)');// tidak lolos validasi
   }),
-  body('penjelasan').isLength({min: 20}).withMessage('Penjelasan harus berisi minimal 20 karakter!'),
+  body('penjelasan').isLength({min: 1}).withMessage('Form tidak boleh kosong!'),
 ], mainController.postReportBug);
 
 router.get('/:key', mainController.getRedirect, errorController.get404);
