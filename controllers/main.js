@@ -4,17 +4,26 @@ const {validationResult} = require('express-validator');
 const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 const {error500} = require('../functions/errors');
 
-exports.isGuest = (req, res, next) => {
-  if (req.isLoggedIn) {// jika user logged in
-    return res.redirect('/');
-  }
-  next();// lanjut ke middleware/controller berikutnya
-};
+/* untuk pagination */
+const urlsPerPage = 5;// banyak url yang ditempilkan perhalaman
+/* untuk pagination */
 
 exports.getIndex = async (req, res, next) => {
   try {
     if (req.isLoggedIn) {// jika user logged in
-      const shortenedUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});
+      const currentPage = +req.query.halaman ? +req.query.halaman : 1;// ambil nilai query dari url
+      const allUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});// ambil semua url dari database
+      const totalUrls = allUrls.length;// banyaknya url di database
+      const totalPages = Math.ceil(totalUrls/urlsPerPage);// banyaknya halaman, Math.ceil() melakukan pembulatan ke atas
+      const skipRows = (currentPage-1) * urlsPerPage;// banyaknya rows yang diskip dihitung dari row pertama
+
+      const shortenedUrls = await ShortenedUrl.findAll({// ambil data url dengan paginasi
+        where: {userId: req.loggedInUser.id},
+        order: [['id', 'DESC']], // urutannya direverse
+        offset: skipRows,
+        limit: urlsPerPage,
+      });
+
       let successMessage = req.flash('success');
 
       if (successMessage.length > 0) {
@@ -28,6 +37,8 @@ exports.getIndex = async (req, res, next) => {
         problemMessage: '',
         successMessage,
         shortenedUrls,
+        totalPages,
+        currentPage,
       });
     } else {// jika user tidak logged in
       res.render('index', {
@@ -51,14 +62,30 @@ exports.postShorten = async (req, res, next) => {
     const validationErrors = validationResult(req);
     const renderPage = req.isLoggedIn ? 'user-index' : 'index';// cek apakah user logged in atau tidak
 
+    /* untuk paginasi */
+    const currentPage = +req.query.halaman ? +req.query.halaman : 1;// ambil nilai query dari url
+    const allUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});// ambil semua url dari database
+    const totalUrls = allUrls.length;// banyaknya url di database
+    const totalPages = Math.ceil(totalUrls/urlsPerPage);// banyaknya halaman, Math.ceil() melakukan pembulatan ke atas
+    const skipRows = (currentPage-1) * urlsPerPage;// banyaknya rows yang diskip dihitung dari row pertama
+    /* untuk paginasi */
+
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       const shortenedUrls = req.isLoggedIn ?
-      await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}}) : null;
+      await ShortenedUrl.findAll({// ambil data url dengan paginasi
+        where: {userId: req.loggedInUser.id},
+        order: [['id', 'DESC']], // urutannya direverse
+        offset: skipRows,
+        limit: urlsPerPage,
+      }) : null;
+
       return res.status(422).render(renderPage, {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
         shortenedUrls,
+        totalPages,
+        currentPage,
       });
     }
 
@@ -98,14 +125,21 @@ exports.postShorten = async (req, res, next) => {
     }
 
     const shortenedUrls = req.isLoggedIn ?
-    await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}}) : null;
+    await ShortenedUrl.findAll({// ambil data url dengan paginasi
+      where: {userId: req.loggedInUser.id},
+      order: [['id', 'DESC']], // urutannya direverse
+      offset: skipRows,
+      limit: urlsPerPage,
+    }) : null;
     if (req.isLoggedIn) {// jika user logged in
       return res.render('user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
-        successMessage: `URL berhasil dibuat secara random, URL baru ada di paling atas. Anda bisa mengedit URL 
+        successMessage: `URL berhasil dibuat secara random, URL baru ada di baris paling atas. Anda bisa mengedit URL 
         dengan mengklik tombol pensil warna kuning dan menghapus URL dengan mengklik tombol trash warna merah.`,
         shortenedUrls,
+        totalPages,
+        currentPage,
       });
     }
     res.render('index', {
