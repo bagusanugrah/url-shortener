@@ -31,7 +31,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <% for (let i = shortenedUrls.length-1; i >= 0; i--) { %>
+                    <% for (let i = 0; i < shortenedUrls.length; i++) { %>
                     <tr>
                         <th scope="row" class="text-center"><%= nomor %></th>
                         <td><a href="<%= address %>/<%= shortenedUrls[i].parameter %>" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= shortenedUrls[i].url %>"><%= address %>/<%= shortenedUrls[i].parameter %></a></td>
@@ -59,16 +59,42 @@
               <% } %>
         </div>
     </div>
+    <% if (totalPages > 1) { %>
     <div class="mb-4">
         <nav class="d-flex justify-content-center" aria-label="...">
-            <ul class="shadow-lg pagination pagination-sm">
-              <li class="page-item active" aria-current="page">
-                <span class="page-link">1</span>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <ul class="pagination pagination">
+              <% if (currentPage !== 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="<%= currentPage-1 === 1 ? '/' : `?halaman=${currentPage-1}` %>">Previous</a>
+                </li>
+              <% } else { %>
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+              <% } %>
+              <% for (let i=1; i<=totalPages; i++) {  %>
+                <% if (currentPage === i) { %>
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link"><%= i %></span>
+                    </li>
+                <% } else { %>
+                    <li class="page-item">
+                        <a class="page-link" href="<%= i === 1 ? '/' : `?halaman=${i}` %>"><%= i %></a>
+                    </li>
+                <% } %>
+              <% } %>
+              <% if (currentPage !== totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?halaman=<%= currentPage + 1 %>">Next</a>
+                </li>
+              <% } else { %>
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+              <% } %>
             </ul>
           </nav>
     </div>
+    <% } %>
 <%- include('./includes/bottom.ejs') %>
                                 
