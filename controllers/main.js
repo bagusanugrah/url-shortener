@@ -1,8 +1,22 @@
+const path = require('path');
+const fs = require('fs');
+
 const {nanoid} = require('nanoid');
 const {validationResult} = require('express-validator');
+const nodemailer = require('nodemailer');
 
 const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 const {error500} = require('../functions/errors');
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+  },
+});
 
 /* untuk pagination */
 const urlsPerPage = 5;// banyak url yang ditempilkan perhalaman
@@ -251,7 +265,71 @@ exports.getReportBug = (req, res, next) => {
   try {
     res.render('report-bug', {
       pageTitle: 'Laporkan Bug',
-      problemMessage: 'Upload gambar yang valid! (PNG/JPG/GIF)',
+      problemMessage: '',
+      successMessage: '',
+    });
+  } catch (error) {
+    error500(error, next);
+  }
+};
+
+exports.postReportBug = async (req, res, next) => {
+  try {
+    const screenshot = req.file;// jika tidak ada file yang diupload, req.file akan bernilai undefined
+    let screenshotPath;
+    const penjelasan = req.body.penjelasan;// ambil penjelasan dari form
+    const validationErrors = validationResult(req);
+
+    if (screenshot) {
+      screenshotPath = path.join('upload', 'images', screenshot.filename);// lokasi file berada
+    }
+
+    if (!validationErrors.isEmpty()) {// jika tidak lolos validasi
+      if (screenshot) {
+        fs.unlink(screenshotPath, (error) => {// file yang sudah terupload akan dihapus secara asynchronous
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
+      return res.status(422).render('report-bug', {
+        pageTitle: 'Laporkan Bug',
+        problemMessage: validationErrors.array()[0].msg,
+        successMessage: '',
+      });
+    }
+
+    if (screenshot) {
+      transporter.sendMail({
+        to: 'bagus.anugrah71@gmail.com',
+        from: `${req.domain}`,
+        subject: `Laporan Bug - ${new Date().toISOString()}`,
+        html: `<p>${penjelasan}</p>`,
+        attachments: [
+          {
+            filename: screenshot.filename,
+            content: fs.createReadStream(screenshotPath),
+          },
+        ],
+      });
+
+      fs.unlink(screenshotPath, (error) => {// menghapus file secara asynchronous
+        if (error) {
+          console.log(error);
+        }
+      });
+    } else {// jika tidak ada screenshot yang diupload
+      transporter.sendMail({
+        to: 'bagus.anugrah71@gmail.com',
+        from: `${req.domain}`,
+        subject: `Laporan Bug - ${new Date().toISOString()}`,
+        html: `<p>${penjelasan}</p>`,
+      });
+    }
+
+    res.render('report-bug', {
+      pageTitle: 'Laporkan Bug',
+      problemMessage: '',
       successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',
     });
   } catch (error) {

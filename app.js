@@ -8,6 +8,7 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const {sequelize, GuestShortenedUrl, User, EmailVerification, PasswordReset} = require('./models');
 const mainRoutes = require('./routes/main');
@@ -24,13 +25,25 @@ const myStore = new SequelizeStore({
 });
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({// mendeklarasikan penyimpanan untuk file upload
+  destination: (req, file, callback) => {// lokasi penyimpanan
+    callback(null, 'upload/images');
+  },
+  filename: (req, file, callback) => {// nama file yang akan disimpan
+    callback(null, `screenshot-${new Date().toISOString()}-${file.originalname}` );
+  },
+});
+
 app.set('view engine', 'ejs');// registrasi template engine
 app.set('views', 'views');// lokasi file yang ingin dirender oleh template engine
 
 app.use(bodyParser.urlencoded({extended: false}));
 // middleware bodyParser.urlencoded() memparsing body request sebelum menjalankan next()
 // bodyparser akan mengambil data dari form dan datanya bisa diakses dari req.body.formName
+app.use(multer({storage: fileStorage}).single('screenshot'));// langsung menyimpan file di storage
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/upload/images', express.static(path.join(__dirname, 'upload/images')));// supaya file bisa diakses oleh client
 
 app.use(
     session({
@@ -134,14 +147,14 @@ app.use(mainRoutes);
 app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
-// app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
-//   // res.redirect('/500');
-//   const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
-//   res.status(statusCode).render('500', {
-//     pageTitle: 'Technical Error!',
-//     path: '/500',
-//   });
-// });
+app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
+  // res.redirect('/500');
+  const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
+  res.status(statusCode).render('500', {
+    pageTitle: 'Technical Error!',
+    path: '/500',
+  });
+});
 
 app.listen({port}, async () => {
   console.log('Server is running');
