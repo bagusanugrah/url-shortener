@@ -40,6 +40,24 @@ router.post('/delete', mainController.postDeleteUrl);
 
 router.get('/report-bug', mainController.getReportBug);
 
+router.post('/report-bug', [
+  body('screenshot').custom((value, {req}) => {
+    const splitFileName = req.file ? req.file.originalname.split('.') : null;
+
+    if (!splitFileName) {// jika tidak ada screenshot yang diupload
+      return true;// tidak usah validasi
+    }
+
+    const fileExtension = splitFileName[splitFileName.length - 1].toLowerCase();
+
+    if (fileExtension === 'png' || fileExtension === 'jpg' || fileExtension === 'jpeg') {
+      return true;// lolos validasi
+    }
+    throw new Error('Upload gambar yang valid! (png/jpg/jpeg)');// tidak lolos validasi
+  }),
+  body('penjelasan').isLength({min: 20}).withMessage('Penjelasan harus berisi minimal 20 karakter!'),
+], mainController.postReportBug);
+
 router.get('/:key', mainController.getRedirect, errorController.get404);
 
 module.exports = router;
