@@ -18,7 +18,6 @@ exports.getLogin = (req, res, next) => {
 
     res.render('auth/login', {
       pageTitle: 'Login',
-      problemMessage: '',
       successMessage,
       oldInput: {email: ''},
     });
@@ -38,7 +37,6 @@ exports.postLogin = async (req, res, next) => {
       return res.status(422).render('auth/login', {
         pageTitle: 'Login',
         problemMessage: validationErrors.array()[0].msg,
-        successMessage: '',
         oldInput: {email},
       });
     }
@@ -64,7 +62,6 @@ exports.postLogin = async (req, res, next) => {
       res.render('auth/login', {
         pageTitle: 'Login',
         problemMessage: 'Password yang anda masukkan salah!',
-        successMessage: '',
         oldInput: {email},
       });
     }
@@ -91,8 +88,6 @@ exports.getRegister = (req, res, next) => {
   try {
     res.render('auth/register', {
       pageTitle: 'Sign Up',
-      problemMessage: '',
-      successMessage: '',
       oldInput: {email: ''},
     });
   } catch (error) {
@@ -114,7 +109,6 @@ exports.postRegister = async (req, res, next) => {
       return res.status(422).render('auth/register', {
         pageTitle: 'Sign Up',
         problemMessage: validationErrors.array()[0].msg,
-        successMessage: '',
         oldInput: {email},
       });
     }
@@ -126,7 +120,6 @@ exports.postRegister = async (req, res, next) => {
 
     res.render('auth/register', {
       pageTitle: 'Sign Up',
-      problemMessage: '',
       successMessage: 'Registrasi berhasil! Silahkan cek inbox email anda untuk verifikasi email.',
       oldInput: {email: ''},
     });
@@ -141,8 +134,6 @@ exports.getFormVerifikasiEmail = (req, res, next) => {
   try {
     res.render('auth/form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
-      problemMessage: '',
-      successMessage: '',
     });
   } catch (error) {
     error500(error, next);
@@ -159,7 +150,6 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       return res.status(422).render('auth/form-verifikasi-email', {
         pageTitle: 'Form Verifikasi Email',
         problemMessage: validationErrors.array()[0].msg,
-        successMessage: '',
       });
     }
 
@@ -192,7 +182,6 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
     res.render('auth/form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
-      problemMessage: '',
       successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
     });
   } catch (error) {
@@ -249,8 +238,6 @@ exports.getResetForm = (req, res, next) => {
   try {
     res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
-      problemMessage: '',
-      successMessage: '',
       oldInput: '',
     });
   } catch (error) {
@@ -269,7 +256,6 @@ exports.postResetForm = async (req, res, next) => {
       return res.status(422).render('auth/form-reset-password', {
         pageTitle: 'Reset Password',
         problemMessage: validationErrors.array()[0].msg,
-        successMessage: '',
         oldInput: {email},
       });
     }
@@ -291,7 +277,6 @@ exports.postResetForm = async (req, res, next) => {
 
     res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
-      problemMessage: '',
       successMessage: 'Link untuk ganti password telah dikirim ke email anda.',
       oldInput: '',
     });
@@ -311,7 +296,6 @@ exports.getReset = async (req, res, next) => {
 
     res.render('auth/reset-password', {
       pageTitle: 'Reset Password',
-      problemMessage: '',
       token,
     });
   } catch (error) {

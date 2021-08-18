@@ -38,7 +38,6 @@ exports.getIndex = async (req, res, next) => {
 
       res.render('main/user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
-        problemMessage: '',
         successMessage,
         shortenedUrls,
         totalPages,
@@ -47,8 +46,6 @@ exports.getIndex = async (req, res, next) => {
     } else {// jika user tidak logged in
       res.render('main/index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
-        problemMessage: '',
-        successMessage: '',
       });
     }
   } catch (error) {
@@ -94,7 +91,6 @@ exports.postShorten = async (req, res, next) => {
       return res.status(422).render(renderPage, {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: validationErrors.array()[0].msg,
-        successMessage: '',
         shortenedUrls,
         totalPages,
         currentPage,
@@ -133,7 +129,6 @@ exports.postShorten = async (req, res, next) => {
     if (req.isLoggedIn) {// jika user logged in
       return res.render('main/user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
-        problemMessage: '',
         successMessage: `URL berhasil dibuat secara random, URL baru ada di baris paling atas. Anda bisa mengedit URL 
         dengan mengklik tombol pensil warna kuning dan menghapus URL dengan mengklik tombol trash warna merah.`,
         shortenedUrls,
@@ -143,7 +138,6 @@ exports.postShorten = async (req, res, next) => {
     }
     res.render('main/index', {
       pageTitle: `${req.domain} | URL shortener buatan orang indo`,
-      problemMessage: '',
       successMessage: `
       Berikut adalah URL anda <a href="${req.address}/${parameter}" target="_blank">${req.address}/${parameter}</a>  (besar kecil huruf berpengaruh)
       <br>
@@ -179,7 +173,6 @@ exports.getEditUrl = async (req, res, next) => {
       pageTitle: 'Edit URL',
       url: shortenedUrl.url,
       oldInput: {parameter}, // untuk oldInput
-      problemMessage: '',
       parameter, // untuk form action
     });
   } catch (error) {
@@ -249,8 +242,6 @@ exports.getReportBug = (req, res, next) => {
   try {
     res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
-      problemMessage: '',
-      successMessage: '',
     });
   } catch (error) {
     error500(error, next);
@@ -279,7 +270,6 @@ exports.postReportBug = async (req, res, next) => {
       return res.status(422).render('main/report-bug', {
         pageTitle: 'Laporkan Bug',
         problemMessage: validationErrors.array()[0].msg,
-        successMessage: '',
       });
     }
 
@@ -313,7 +303,6 @@ exports.postReportBug = async (req, res, next) => {
 
     res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
-      problemMessage: '',
       successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',
     });
   } catch (error) {
