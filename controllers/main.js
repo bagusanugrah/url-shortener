@@ -69,7 +69,7 @@ exports.getIndex = async (req, res, next) => {
 exports.postShorten = async (req, res, next) => {
   try {
     const url = req.body.url;// ambil url dari form
-    let secondId = 'url-' + nanoid(16);// buat random secondId
+    const secondId = 'url-' + nanoid(16);// buat random secondId
     let parameter = nanoid(6);// buat random parameter
     const expiredAt = Date.now() + 30000;// (3600000*24*3)
     let isAvailable = true;
@@ -110,19 +110,6 @@ exports.postShorten = async (req, res, next) => {
         currentPage,
       });
     }
-
-    while (isAvailable) {// cek apakah random secondId ada di database
-      const guestUrl = await GuestShortenedUrl.findOne({where: {secondId}});
-      const url = await ShortenedUrl.findOne({where: {secondId}});
-
-      if (guestUrl || url) {// jika random secondId ada di database
-        secondId = 'url-' + nanoid(16);// buat random secondId baru
-      } else {// jika random secondId tidak ada di database
-        isAvailable = false;// tidak usah buat random secondId baru
-      }
-    }
-
-    isAvailable = true;
 
     while (isAvailable) {// cek apakah random parameter ada di database
       const guestUrl = await GuestShortenedUrl.findOne({where: {parameter}});// cari random paramater di database
