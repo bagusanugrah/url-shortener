@@ -108,7 +108,7 @@ app.use(errorController.get404);
 app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
   // res.redirect('/500');
   const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
-  res.status(statusCode).render('500', {
+  res.status(statusCode).render('error/500', {
     pageTitle: 'Technical Error!',
     path: '/500',
   });

@@ -16,7 +16,7 @@ exports.getLogin = (req, res, next) => {
       successMessage = '';
     }
 
-    res.render('login', {
+    res.render('auth/login', {
       pageTitle: 'Login',
       problemMessage: '',
       successMessage,
@@ -35,7 +35,7 @@ exports.postLogin = async (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      return res.status(422).render('login', {
+      return res.status(422).render('auth/login', {
         pageTitle: 'Login',
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
@@ -61,7 +61,7 @@ exports.postLogin = async (req, res, next) => {
         res.redirect('/');// jika tidak terjadi error
       });
     } else {// jika inputan password tidak sama dengan yang di database
-      res.render('login', {
+      res.render('auth/login', {
         pageTitle: 'Login',
         problemMessage: 'Password yang anda masukkan salah!',
         successMessage: '',
@@ -89,7 +89,7 @@ exports.postLogout = (req, res, next) => {
 
 exports.getRegister = (req, res, next) => {
   try {
-    res.render('register', {
+    res.render('auth/register', {
       pageTitle: 'Sign Up',
       problemMessage: '',
       successMessage: '',
@@ -111,7 +111,7 @@ exports.postRegister = async (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      return res.status(422).render('register', {
+      return res.status(422).render('auth/register', {
         pageTitle: 'Sign Up',
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
@@ -124,7 +124,7 @@ exports.postRegister = async (req, res, next) => {
     await User.create({secondId, email, password: hashedPassword, status, expiredAt});// membuat user baru
     await EmailVerification.create({token, email, expiredAt});// simpan token baru dalam database
 
-    res.render('register', {
+    res.render('auth/register', {
       pageTitle: 'Sign Up',
       problemMessage: '',
       successMessage: 'Registrasi berhasil! Silahkan cek inbox email anda untuk verifikasi email.',
@@ -139,7 +139,7 @@ exports.postRegister = async (req, res, next) => {
 
 exports.getFormVerifikasiEmail = (req, res, next) => {
   try {
-    res.render('form-verifikasi-email', {
+    res.render('auth/form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
       problemMessage: '',
       successMessage: '',
@@ -156,7 +156,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      return res.status(422).render('form-verifikasi-email', {
+      return res.status(422).render('auth/form-verifikasi-email', {
         pageTitle: 'Form Verifikasi Email',
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
@@ -190,7 +190,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       sendEmailVerificationLink(req, email, token);// kirimkan token baru
     }
 
-    res.render('form-verifikasi-email', {
+    res.render('auth/form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
       problemMessage: '',
       successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
@@ -209,7 +209,7 @@ exports.getVerifikasiEmail = async (req, res, next) => {
       return next();
     }
 
-    res.render('verifikasi-email', {
+    res.render('auth/verifikasi-email', {
       pageTitle: 'Klik tombol untuk verifikasi!',
       token,
     });
@@ -237,7 +237,7 @@ exports.postVerifikasiEmail = async (req, res, next) => {
     await user.save();// perbarui data user
     await tokenData.destroy();// menghapus token dari database
 
-    res.render('verifikasi-berhasil', {
+    res.render('auth/verifikasi-berhasil', {
       pageTitle: 'Email Berhasil Diverifikasi!',
     });
   } catch (error) {
@@ -247,7 +247,7 @@ exports.postVerifikasiEmail = async (req, res, next) => {
 
 exports.getResetForm = (req, res, next) => {
   try {
-    res.render('form-reset-password', {
+    res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
       problemMessage: '',
       successMessage: '',
@@ -266,7 +266,7 @@ exports.postResetForm = async (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      return res.status(422).render('form-reset-password', {
+      return res.status(422).render('auth/form-reset-password', {
         pageTitle: 'Reset Password',
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
@@ -289,7 +289,7 @@ exports.postResetForm = async (req, res, next) => {
       sendResetPasswordLink(req, email, token);
     }
 
-    res.render('form-reset-password', {
+    res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
       problemMessage: '',
       successMessage: 'Link untuk ganti password telah dikirim ke email anda.',
@@ -309,7 +309,7 @@ exports.getReset = async (req, res, next) => {
       return next();
     }
 
-    res.render('reset-password', {
+    res.render('auth/reset-password', {
       pageTitle: 'Reset Password',
       problemMessage: '',
       token,
@@ -332,7 +332,7 @@ exports.postReset = async (req, res, next) => {
     }
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      return res.status(422).render('reset-password', {
+      return res.status(422).render('auth/reset-password', {
         pageTitle: 'Reset Password',
         problemMessage: validationErrors.array()[0].msg,
         token,
@@ -345,7 +345,7 @@ exports.postReset = async (req, res, next) => {
     await user.save();// perbarui data user
     await tokenData.destroy();// hapus token dari database
 
-    res.render('reset-berhasil', {
+    res.render('auth/reset-berhasil', {
       pageTitle: 'Password berhasil diganti!',
     });
   } catch (error) {

@@ -36,7 +36,7 @@ exports.getIndex = async (req, res, next) => {
         successMessage = '';
       }
 
-      res.render('user-index', {
+      res.render('main/user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage,
@@ -45,7 +45,7 @@ exports.getIndex = async (req, res, next) => {
         currentPage,
       });
     } else {// jika user tidak logged in
-      res.render('index', {
+      res.render('main/index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage: '',
@@ -131,7 +131,7 @@ exports.postShorten = async (req, res, next) => {
       limit: urlsPerPage,
     }) : null;
     if (req.isLoggedIn) {// jika user logged in
-      return res.render('user-index', {
+      return res.render('main/user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage: `URL berhasil dibuat secara random, URL baru ada di baris paling atas. Anda bisa mengedit URL 
@@ -141,7 +141,7 @@ exports.postShorten = async (req, res, next) => {
         currentPage,
       });
     }
-    res.render('index', {
+    res.render('main/index', {
       pageTitle: `${req.domain} | URL shortener buatan orang indo`,
       problemMessage: '',
       successMessage: `
@@ -175,7 +175,7 @@ exports.getEditUrl = async (req, res, next) => {
       return res.redirect('/');
     }
 
-    res.render('edit-url', {
+    res.render('main/edit-url', {
       pageTitle: 'Edit URL',
       url: shortenedUrl.url,
       oldInput: {parameter}, // untuk oldInput
@@ -195,7 +195,7 @@ exports.postEditUrl = async (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      return res.status(422).render('edit-url', {
+      return res.status(422).render('main/edit-url', {
         pageTitle: 'Edit URL',
         url: shortenedUrl.url,
         oldInput: {parameter: inputParam}, // untuk oldInput
@@ -247,7 +247,7 @@ exports.getRedirect = async (req, res, next) => {
 
 exports.getReportBug = (req, res, next) => {
   try {
-    res.render('report-bug', {
+    res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
       problemMessage: '',
       successMessage: '',
@@ -276,7 +276,7 @@ exports.postReportBug = async (req, res, next) => {
           }
         });
       }
-      return res.status(422).render('report-bug', {
+      return res.status(422).render('main/report-bug', {
         pageTitle: 'Laporkan Bug',
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
@@ -311,7 +311,7 @@ exports.postReportBug = async (req, res, next) => {
       });
     }
 
-    res.render('report-bug', {
+    res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
       problemMessage: '',
       successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',

@@ -1,9 +1,9 @@
-<%- include('./includes/top.ejs') %>
+<%- include('../includes/top.ejs') %>
     <% if(successMessage){ %>
-        <%- include('./includes/components/alert/success.ejs') %>
+        <%- include('../includes/components/alert/success.ejs') %>
     <% } %>
     <% if(problemMessage){ %>
-        <%- include('./includes/components/alert/problem.ejs') %>
+        <%- include('../includes/components/alert/problem.ejs') %>
     <% } %>
     <div class="card shadow-lg border-0 rounded-lg mb-4">
         <div class="card-header justify-content-center"><h3 class="fw-light my-4">Verifikasi Email</h3></div>
@@ -29,4 +29,4 @@
             <div class="small"><a href="/register">Need an account? Sign up!</a></div>
         </div>
     </div>
-<%- include('./includes/bottom.ejs') %>
+<%- include('../includes/bottom.ejs') %>
