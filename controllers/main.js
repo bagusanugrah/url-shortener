@@ -42,10 +42,12 @@ exports.getIndex = async (req, res, next) => {
         shortenedUrls,
         totalPages,
         currentPage,
+        page: 'home',
       });
     } else {// jika user tidak logged in
       res.render('main/index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
+        page: 'home',
       });
     }
   } catch (error) {
@@ -61,7 +63,7 @@ exports.postShorten = async (req, res, next) => {
     const expiredAt = Date.now() + 30000;// (3600000*24*3)
     let isAvailable = true;
     const validationErrors = validationResult(req);
-    const renderPage = req.isLoggedIn ? 'user-index' : 'index';// cek apakah user logged in atau tidak
+    const renderPage = req.isLoggedIn ? 'main/user-index' : 'main/index';// cek apakah user logged in atau tidak
 
     /* untuk paginasi */
     let currentPage;// ambil nilai query dari url
@@ -94,6 +96,7 @@ exports.postShorten = async (req, res, next) => {
         shortenedUrls,
         totalPages,
         currentPage,
+        page: 'home',
       });
     }
 
@@ -134,6 +137,7 @@ exports.postShorten = async (req, res, next) => {
         shortenedUrls,
         totalPages,
         currentPage,
+        page: 'home',
       });
     }
     res.render('main/index', {
@@ -146,6 +150,7 @@ exports.postShorten = async (req, res, next) => {
       URL ini dibuat secara random dan akan dihapus secara otomatis dari database jika selama 3 hari tidak digunakan. Login terlebih dahulu agar anda bisa 
       membuat custom URL anda sendiri dan agar URL menjadi permanen.
       `,
+      page: 'home',
     });
   } catch (error) {
     error500(error, next);
@@ -242,6 +247,7 @@ exports.getReportBug = (req, res, next) => {
   try {
     res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
+      page: 'bug',
     });
   } catch (error) {
     error500(error, next);
@@ -270,6 +276,7 @@ exports.postReportBug = async (req, res, next) => {
       return res.status(422).render('main/report-bug', {
         pageTitle: 'Laporkan Bug',
         problemMessage: validationErrors.array()[0].msg,
+        page: 'bug',
       });
     }
 
@@ -304,6 +311,7 @@ exports.postReportBug = async (req, res, next) => {
     res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
       successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',
+      page: 'bug',
     });
   } catch (error) {
     error500(error, next);
