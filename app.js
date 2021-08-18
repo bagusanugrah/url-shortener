@@ -91,6 +91,7 @@ app.use((req, res, next) => {// supaya variable bisa dipakai di semua render vie
   res.locals.address = req.address;
   res.locals.problemMessage = '';
   res.locals.successMessage = '';
+  res.locals.page = '';
   next();
 });
 
@@ -107,14 +108,14 @@ app.use(mainRoutes);
 app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
-app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
-  // res.redirect('/500');
-  const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
-  res.status(statusCode).render('error/500', {
-    pageTitle: 'Technical Error!',
-    path: '/500',
-  });
-});
+// app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
+//   // res.redirect('/500');
+//   const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
+//   res.status(statusCode).render('error/500', {
+//     pageTitle: 'Technical Error!',
+//     path: '/500',
+//   });
+// });
 
 app.listen({port}, async () => {
   console.log('Server is running');
