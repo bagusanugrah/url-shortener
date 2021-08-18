@@ -3,20 +3,10 @@ const fs = require('fs');
 
 const {nanoid} = require('nanoid');
 const {validationResult} = require('express-validator');
-const nodemailer = require('nodemailer');
 
 const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 const {error500} = require('../functions/errors');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
-  },
-});
+const {transporter} = require('../utils/nodemailer');
 
 /* untuk pagination */
 const urlsPerPage = 5;// banyak url yang ditempilkan perhalaman

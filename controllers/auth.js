@@ -1,20 +1,10 @@
 const {nanoid} = require('nanoid');
 const {validationResult} = require('express-validator');
-const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 
 const {User, EmailVerification, PasswordReset} = require('../models');
 const {error500} = require('../functions/errors');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
-  },
-});
+const {sendEmailVerificationLink, sendResetPasswordLink} = require('../utils/nodemailer');
 
 exports.getLogin = (req, res, next) => {
   try {
@@ -141,17 +131,7 @@ exports.postRegister = async (req, res, next) => {
       oldInput: {email: ''},
     });
 
-    transporter.sendMail({
-      to: email,
-      from: `${req.domain}`,
-      subject: 'Verifikasi Email',
-      html: `
-      <h3>Klik link di bawah ini untuk verifikasi email anda</h3>
-      <p><a href="${req.address}/verifikasi-email/${token}" target="_blank">
-        ${req.address}/verifikasi-email/${token}
-      </a></p>
-      `,
-    });
+    sendEmailVerificationLink(req, email, token);
   } catch (error) {
     error500(error, next);
   }
@@ -197,17 +177,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       user.expiredAt = expiredAt;
       await user.save();
 
-      transporter.sendMail({// kirimkan token yang ketemu tadi
-        to: email,
-        from: `${req.domain}`,
-        subject: 'Verifikasi Email',
-        html: `
-        <h3>Klik link di bawah ini untuk verifikasi email anda</h3>
-        <p><a href="${req.address}/verifikasi-email/${token}" target="_blank">
-          ${req.address}/verifikasi-email/${token}
-        </a></p>
-        `,
-      });
+      sendEmailVerificationLink(req, email, token);// kirimkan token yang ketemu tadi
     } else {// jika token tidak ketemu
       const token = nanoid(32);// buat token baru
 
@@ -217,17 +187,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       user.expiredAt = expiredAt;
       await user.save();
 
-      transporter.sendMail({// kirimkan token baru
-        to: email,
-        from: `${req.domain}`,
-        subject: 'Verifikasi Email',
-        html: `
-        <h3>Klik link di bawah ini untuk verifikasi email anda</h3>
-        <p><a href="${req.address}/verifikasi-email/${token}" target="_blank">
-          ${req.address}/verifikasi-email/${token}
-        </a></p>
-        `,
-      });
+      sendEmailVerificationLink(req, email, token);// kirimkan token baru
     }
 
     res.render('form-verifikasi-email', {
@@ -320,33 +280,13 @@ exports.postResetForm = async (req, res, next) => {
       tokenData.expiredAt = expiredAt;// perbarui masa tenggang penghapusan token
       await tokenData.save();// perbarui data token
 
-      transporter.sendMail({
-        to: email,
-        from: `${req.domain}`,
-        subject: 'Reset Password',
-        html: `
-        <h3>Klik link di bawah ini untuk ganti password anda</h3>
-        <p><a href="${req.address}/reset-password/${token}" target="_blank">
-          ${req.address}/reset-password/${token}
-        </a></p>
-        `,
-      });
+      sendResetPasswordLink(req, email, token);
     } else {// jika token tidak ketemu
       const token = nanoid(32);// buat token baru
 
       await PasswordReset.create({token, email, expiredAt}); // simpan token baru dalam database
 
-      transporter.sendMail({
-        to: email,
-        from: `${req.domain}`,
-        subject: 'Reset Password',
-        html: `
-        <h3>Klik link di bawah ini untuk ganti password anda</h3>
-        <p><a href="${req.address}/reset-password/${token}" target="_blank">
-          ${req.address}/reset-password/${token}
-        </a></p>
-        `,
-      });
+      sendResetPasswordLink(req, email, token);
     }
 
     res.render('form-reset-password', {
