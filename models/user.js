@@ -13,7 +13,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ShortenedUrl}) {
       // define association here
-      this.hasMany(ShortenedUrl, {foreignKey: 'userId', as: 'shortenedUrls'});
+      this.hasMany(ShortenedUrl, {
+        foreignKey: {
+          name: 'userId',
+          allowNull: false,
+        },
+        as: 'user',
+      });
     }
   };
   User.init({

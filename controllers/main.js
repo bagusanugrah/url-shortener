@@ -3,20 +3,10 @@ const fs = require('fs');
 
 const {nanoid} = require('nanoid');
 const {validationResult} = require('express-validator');
-const nodemailer = require('nodemailer');
 
 const {GuestShortenedUrl, ShortenedUrl} = require('../models');
 const {error500} = require('../functions/errors');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
-  },
-});
+const {transporter} = require('../utils/nodemailer');
 
 /* untuk pagination */
 const urlsPerPage = 5;// banyak url yang ditempilkan perhalaman
@@ -46,7 +36,7 @@ exports.getIndex = async (req, res, next) => {
         successMessage = '';
       }
 
-      res.render('user-index', {
+      res.render('main/user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage,
@@ -55,7 +45,7 @@ exports.getIndex = async (req, res, next) => {
         currentPage,
       });
     } else {// jika user tidak logged in
-      res.render('index', {
+      res.render('main/index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage: '',
@@ -69,7 +59,7 @@ exports.getIndex = async (req, res, next) => {
 exports.postShorten = async (req, res, next) => {
   try {
     const url = req.body.url;// ambil url dari form
-    let secondId = 'url-' + nanoid(16);// buat random secondId
+    const secondId = 'url-' + nanoid(16);// buat random secondId
     let parameter = nanoid(6);// buat random parameter
     const expiredAt = Date.now() + 30000;// (3600000*24*3)
     let isAvailable = true;
@@ -111,19 +101,6 @@ exports.postShorten = async (req, res, next) => {
       });
     }
 
-    while (isAvailable) {// cek apakah random secondId ada di database
-      const guestUrl = await GuestShortenedUrl.findOne({where: {secondId}});
-      const url = await ShortenedUrl.findOne({where: {secondId}});
-
-      if (guestUrl || url) {// jika random secondId ada di database
-        secondId = 'url-' + nanoid(16);// buat random secondId baru
-      } else {// jika random secondId tidak ada di database
-        isAvailable = false;// tidak usah buat random secondId baru
-      }
-    }
-
-    isAvailable = true;
-
     while (isAvailable) {// cek apakah random parameter ada di database
       const guestUrl = await GuestShortenedUrl.findOne({where: {parameter}});// cari random paramater di database
       const url = await ShortenedUrl.findOne({where: {parameter}});// cari random parameter di database
@@ -154,7 +131,7 @@ exports.postShorten = async (req, res, next) => {
       limit: urlsPerPage,
     }) : null;
     if (req.isLoggedIn) {// jika user logged in
-      return res.render('user-index', {
+      return res.render('main/user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
         problemMessage: '',
         successMessage: `URL berhasil dibuat secara random, URL baru ada di baris paling atas. Anda bisa mengedit URL 
@@ -164,7 +141,7 @@ exports.postShorten = async (req, res, next) => {
         currentPage,
       });
     }
-    res.render('index', {
+    res.render('main/index', {
       pageTitle: `${req.domain} | URL shortener buatan orang indo`,
       problemMessage: '',
       successMessage: `
@@ -198,7 +175,7 @@ exports.getEditUrl = async (req, res, next) => {
       return res.redirect('/');
     }
 
-    res.render('edit-url', {
+    res.render('main/edit-url', {
       pageTitle: 'Edit URL',
       url: shortenedUrl.url,
       oldInput: {parameter}, // untuk oldInput
@@ -218,7 +195,7 @@ exports.postEditUrl = async (req, res, next) => {
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      return res.status(422).render('edit-url', {
+      return res.status(422).render('main/edit-url', {
         pageTitle: 'Edit URL',
         url: shortenedUrl.url,
         oldInput: {parameter: inputParam}, // untuk oldInput
@@ -270,7 +247,7 @@ exports.getRedirect = async (req, res, next) => {
 
 exports.getReportBug = (req, res, next) => {
   try {
-    res.render('report-bug', {
+    res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
       problemMessage: '',
       successMessage: '',
@@ -299,7 +276,7 @@ exports.postReportBug = async (req, res, next) => {
           }
         });
       }
-      return res.status(422).render('report-bug', {
+      return res.status(422).render('main/report-bug', {
         pageTitle: 'Laporkan Bug',
         problemMessage: validationErrors.array()[0].msg,
         successMessage: '',
@@ -334,7 +311,7 @@ exports.postReportBug = async (req, res, next) => {
       });
     }
 
-    res.render('report-bug', {
+    res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
       problemMessage: '',
       successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',
