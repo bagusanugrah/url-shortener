@@ -3,18 +3,18 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const {Op} = require('sequelize');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
 
-const {sequelize, GuestShortenedUrl, User, EmailVerification, PasswordReset} = require('./models');
+const {sequelize, User} = require('./models');
 const mainRoutes = require('./routes/main');
 const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 const {error500} = require('./functions/errors');
+const {dataRemover} = require('./middlewares/dataRemover');
 
 const app = express();
 const port = process.env.PORT;
@@ -92,49 +92,7 @@ app.use((req, res, next) => {// supaya variable bisa dipakai di semua render vie
   next();
 });
 
-app.use(async (req, res, next) => {// penghapus otomatis
-  await GuestShortenedUrl.destroy({
-    where: {
-      expiredAt: {
-        [Op.lt]: Date.now(),
-      },
-    },
-  });
-  next();
-});
-
-app.use(async (req, res, next) => {// penghapus otomatis
-  await EmailVerification.destroy({
-    where: {
-      expiredAt: {
-        [Op.lt]: Date.now(),
-      },
-    },
-  });
-  next();
-});
-
-app.use(async (req, res, next) => {// penghapus otomatis
-  await PasswordReset.destroy({
-    where: {
-      expiredAt: {
-        [Op.lt]: Date.now(),
-      },
-    },
-  });
-  next();
-});
-
-app.use(async (req, res, next) => {// penghapus otomatis
-  await User.destroy({
-    where: {
-      expiredAt: {
-        [Op.lt]: Date.now(),
-      },
-    },
-  });
-  next();
-});
+app.use(dataRemover);// penghapus otomatis
 
 /**
 authRoutes diletakkan di atas mainRoutes supaya routes semisal /login, /register, dll bisa ditemukan (tidak 404)
