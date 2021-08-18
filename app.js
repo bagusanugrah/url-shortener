@@ -89,6 +89,8 @@ app.use((req, res, next) => {// supaya variable bisa dipakai di semua render vie
   res.locals.csrfToken = req.csrfToken();
   res.locals.domain = req.domain;
   res.locals.address = req.address;
+  res.locals.problemMessage = '';
+  res.locals.successMessage = '';
   next();
 });
 
