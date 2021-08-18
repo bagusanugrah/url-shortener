@@ -13,7 +13,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({User}) {
       // define association here
-      this.belongsTo(User, {foreignKey: 'userId', as: 'user'});
+      this.belongsTo(User, {
+        foreignKey: {
+          name: 'userId',
+          allowNull: false,
+        },
+        as: 'user',
+        constraints: true,
+        onDelete: 'CASCADE',
+      });
     }
   };
   ShortenedUrl.init({
