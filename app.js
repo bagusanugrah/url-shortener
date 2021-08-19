@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const csrf = require('csurf');
-const flash = require('connect-flash');
 const multer = require('multer');
 
 const {sequelize, User} = require('./models');
@@ -57,7 +56,6 @@ app.use(
 myStore.sync();
 app.use(csrfProtection);// csrfProtection berguna untuk melindungi setiap request (selain get) dari CSRF Attack
 // csrf didaftarkan setelah session karena csrf akan menggunakan session tersebut
-app.use(flash());// flash didaftarkan setelah session karena flash akan menggunakan session tersebut
 
 app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.propertyBaru bisa digunakan di semua routes
   try {
