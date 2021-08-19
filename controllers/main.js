@@ -138,7 +138,7 @@ exports.postShorten = async (req, res, next) => {
       <br>
       <br>
       Penting:<br>
-      URL ini dibuat secara random dan akan dihapus secara otomatis dari database jika selama 3 hari tidak digunakan. Login terlebih dahulu agar anda bisa 
+      URL ini dibuat secara random dan akan dihapus secara otomatis dari database jika selama 7 hari tidak digunakan. Login terlebih dahulu agar anda bisa 
       membuat custom URL anda sendiri dan agar URL menjadi permanen.
       `,
       page: 'home',
