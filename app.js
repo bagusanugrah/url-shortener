@@ -97,6 +97,8 @@ app.use((req, res, next) => {// supaya variable bisa dipakai di semua render vie
 
 app.use(dataRemover);// penghapus otomatis
 
+app.use(errorController.getUnderConstruction);
+
 /**
 authRoutes diletakkan di atas mainRoutes supaya routes semisal /login, /register, dll bisa ditemukan (tidak 404)
 karena di mainRoutes ada controller getRedirect yang mana kalo /:parameter tidak ada di database maka akan
