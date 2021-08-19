@@ -97,6 +97,8 @@ app.use((req, res, next) => {// supaya variable bisa dipakai di semua render vie
 
 app.use(dataRemover);// penghapus otomatis
 
+app.use(errorController.getUnderConstruction);
+
 /**
 authRoutes diletakkan di atas mainRoutes supaya routes semisal /login, /register, dll bisa ditemukan (tidak 404)
 karena di mainRoutes ada controller getRedirect yang mana kalo /:parameter tidak ada di database maka akan
@@ -105,17 +107,9 @@ menjadi 404. Di express, routes /spesifik harus diletakkan sebelum routes /:para
 app.use(authRoutes);
 app.use(mainRoutes);
 
-app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
-app.use((error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
-  // res.redirect('/500');
-  const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
-  res.status(statusCode).render('error/500', {
-    pageTitle: 'Technical Error!',
-    path: '/500',
-  });
-});
+app.use(errorController.get500);
 
 app.listen({port}, async () => {
   console.log('Server is running');
