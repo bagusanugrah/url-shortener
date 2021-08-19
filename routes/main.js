@@ -58,6 +58,8 @@ router.post('/report-bug', [
   body('penjelasan').isLength({min: 1}).withMessage('Form tidak boleh kosong!'),
 ], mainController.postReportBug);
 
+router.get('/ketentuan', mainController.getKetentuan);
+
 router.get('/:key', mainController.getRedirect, errorController.get404);
 
 module.exports = router;
