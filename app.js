@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 const {error500} = require('./functions/errors');
 const {dataRemover} = require('./middlewares/dataRemover');
+const {localVariables} = require('./middlewares/local-variables');
 
 const app = express();
 const port = process.env.PORT;
@@ -82,16 +83,7 @@ app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.prop
   }
 });
 
-app.use((req, res, next) => {// supaya variable bisa dipakai di semua render views
-  res.locals.isLoggedIn = req.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  res.locals.domain = req.domain;
-  res.locals.address = req.address;
-  res.locals.problemMessage = '';
-  res.locals.successMessage = '';
-  res.locals.page = '';
-  next();
-});
+app.use(localVariables);// supaya variable bisa dipakai di semua render views
 
 app.use(dataRemover);// penghapus otomatis
 
