@@ -18,6 +18,7 @@ const {localVariables} = require('./middlewares/local-variables');
 
 const app = express();
 const port = process.env.PORT;
+const hostname = process.env.NODE_ENV === 'development' ? 'localhost' : process.env.HOSTNAME;
 
 const myStore = new SequelizeStore({
   db: sequelize,
@@ -101,7 +102,7 @@ app.use(errorController.get404);
 
 app.use(errorController.get500);
 
-app.listen({port}, async () => {
+app.listen(port, hostname, async () => {
   console.log('Server is running');
   await sequelize.sync();
   console.log('CONNECTED TO THE DATABASE');
