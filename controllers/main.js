@@ -28,17 +28,8 @@ exports.getIndex = async (req, res, next) => {
         limit: urlsPerPage,
       });
 
-      let successMessage = req.flash('success');
-
-      if (successMessage.length > 0) {
-        successMessage = successMessage[0];
-      } else {
-        successMessage = '';
-      }
-
       res.render('main/user-index', {
         pageTitle: `${req.domain} | URL shortener buatan orang indo`,
-        successMessage,
         shortenedUrls,
         totalPages,
         currentPage,

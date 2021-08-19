@@ -8,17 +8,8 @@ const {sendEmailVerificationLink, sendResetPasswordLink} = require('../utils/nod
 
 exports.getLogin = (req, res, next) => {
   try {
-    let successMessage = req.flash('success');
-
-    if (successMessage.length > 0) {
-      successMessage = successMessage[0];
-    } else {
-      successMessage = '';
-    }
-
     res.render('auth/login', {
       pageTitle: 'Login',
-      successMessage,
       oldInput: {email: ''},
     });
   } catch (error) {
