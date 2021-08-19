@@ -1,7 +1,9 @@
 <%- include('../includes/top.ejs') %>
-    <% if(successMessage){ %>
-        <%- include('../includes/components/alert/success.ejs') %>
-    <% } %>
+    <div style="text-align: justify;">
+        <% if(successMessage){ %>
+            <%- include('../includes/components/alert/success.ejs') %>
+        <% } %>
+    </div>
     <% if(problemMessage){ %>
         <%- include('../includes/components/alert/problem.ejs') %>
     <% } %>
