@@ -37,13 +37,13 @@
                         <td><a href="<%= address %>/<%= shortenedUrls[i].parameter %>" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= shortenedUrls[i].url %>"><%= address %>/<%= shortenedUrls[i].parameter %></a></td>
                         <td class="text-center">
                             <a href="<%= address %>/edit/<%= shortenedUrls[i].parameter %>" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                <i data-feather="edit-2"></i>
+                                <i class="far fa-edit"></i>
                             </a>
                             <form action="/delete" method="POST" style="display: inline;">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <input type="hidden" name="urlId" value="<%= shortenedUrls[i].secondId %>">
                                 <button class="btn btn-sm btn-danger" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
-                                    <i data-feather="trash"></i>
+                                    <i class="far fa-trash-alt"></i>
                                 </button>
                             </form>
                         </td>
