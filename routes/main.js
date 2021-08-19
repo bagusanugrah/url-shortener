@@ -60,6 +60,8 @@ router.post('/report-bug', [
 
 router.get('/ketentuan', mainController.getKetentuan);
 
+router.get('/stat', mainController.getStat);
+
 router.get('/:key', mainController.getRedirect, errorController.get404);
 
 module.exports = router;
