@@ -4,8 +4,10 @@ exports.get404 = (req, res, next) => {
   });
 };
 
-exports.get500 = (req, res, next) => {
-  res.status(500).render('error/500', {
-    pageTitle: 'Telah terjadi kesalahan teknis!',
+exports.get500 = (error, req, res, next) => {// middleware ini dijalankan ketika terjadi error
+  const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
+  res.status(statusCode).render('error/500', {
+    pageTitle: 'Terjadi kesalahan teknis!',
+    path: '/500',
   });
 };
