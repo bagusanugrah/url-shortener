@@ -4,7 +4,7 @@ const fs = require('fs');
 const {nanoid} = require('nanoid');
 const {validationResult} = require('express-validator');
 
-const {GuestShortenedUrl, ShortenedUrl} = require('../models');
+const {GuestShortenedUrl, ShortenedUrl, User} = require('../models');
 const {error500} = require('../functions/errors');
 const {transporter} = require('../utils/nodemailer');
 
@@ -316,6 +316,26 @@ exports.getKetentuan = (req, res, next) => {
       page: 'ketentuan',
     });
   } catch (error) {
-    error500(error);
+    error500(error, next);
+  }
+};
+
+exports.getStat = async (req, res, next) => {
+  try {
+    const users = await User.findAll();
+    const guestURLs = await GuestShortenedUrl.findAll();
+    const userURLs = await ShortenedUrl.findAll();
+    const totalUsers = users.length;
+    const totalGuestURLs = guestURLs.length;
+    const totalUserURLs = userURLs.length;
+
+    res.render('main/stat', {
+      pageTitle: 'Stat',
+      totalUsers,
+      totalGuestURLs,
+      totalUserURLs,
+    });
+  } catch (error) {
+    error500(error, next);
   }
 };

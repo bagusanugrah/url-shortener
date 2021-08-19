@@ -1,0 +1,24 @@
+<%- include('../includes/top.ejs') %>
+    <div class="card shadow-lg border-0 rounded-lg mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-center">
+                <table class="table table-bordered table-striped table-hover text-center">
+                    <thead>
+                      <tr>
+                        <th scope="col">Users</th>
+                        <th scope="col">Guest URLs</th>
+                        <th scope="col">User URLs</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><%= totalUsers %></td>
+                            <td><%= totalGuestURLs %></td>
+                            <td><%= totalUserURLs %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<%- include('../includes/bottom.ejs') %>
