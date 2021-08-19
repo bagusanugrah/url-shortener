@@ -308,3 +308,14 @@ exports.postReportBug = async (req, res, next) => {
     error500(error, next);
   }
 };
+
+exports.getKetentuan = (req, res, next) => {
+  try {
+    res.render('main/ketentuan', {
+      pageTitle: 'Ketentuan Pemakaian',
+      page: 'ketentuan',
+    });
+  } catch (error) {
+    error500(error);
+  }
+};

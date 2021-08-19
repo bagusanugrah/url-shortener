@@ -1,0 +1,43 @@
+<%- include('../includes/top.ejs') %>
+    <div class="card shadow-lg border-0 rounded-lg mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-center">
+                <div class="alert alert-primary" role="alert">
+                    <h4 style="text-align: justify;" class="alert-heading">Ketentuan-ketentuan yang perlu diketahui:</h4>
+                    <hr>
+                    <ol style="text-align: justify;">
+                        <li>
+                            URL baru yang anda buat tanpa login terlebih dahulu akan dibuat secara random dan 
+                            akan dihapus otomatis dari database jika selama 7 hari tidak diakses sama sekali.
+                        </li>
+                        <li>
+                            Jika anda login, anda bisa membuat custom URL anda sendiri dan URL tersebut akan 
+                            menjadi permanen.
+                        </li>
+                        <li>
+                            Email yang belum diverifikasi tidak bisa digunakan untuk login dan akan dihapus 
+                            otomatis dari database jika selama 1 jam setelah registrasi tidak diverifikasi.
+                        </li>
+                        <li>
+                            Jika anda menggunakan Form Verifikasi Email maka waktu penghapusan akun akan 
+                            diperpanjang selama 1 jam ke depan.
+                        </li>
+                        <li>
+                            Akun yang sama sekali tidak login selama 3 bulan akan dihapus otomatis dari database.
+                        </li>
+                        <li>
+                            Link untuk mengubah password yang dikirimkan ke email anda akan dihapus otomatis dari 
+                            database setelah 5 menit semenjak anda mendapatkan link tersebut. Jika sudah dihapus 
+                            anda bisa mendapatkan link baru dengan mengisi lagi Form Ganti Password.
+                        </li>
+                    </ol>
+                    <p style="text-align: justify;">
+                        Ketentuan-ketentuan penghapusan di atas saya terapkan pada <%= domain %> karena harga server 
+                        mahal bos! Jadi saya berusaha supaya databasenya tidak kepenuhan dengan menerapkan algoritma 
+                        penghapusan otomatis tersebut.
+                    </p>
+                  </div>    
+            </div>
+        </div>
+    </div>
+<%- include('../includes/bottom.ejs') %>
