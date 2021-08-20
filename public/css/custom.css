@@ -3,6 +3,10 @@ img {
     height: auto;
 }
 
+.donasi {
+    width: 20rem;
+}
+
 .btn-gray {
     color: #fff;
     background-color: #adb5bd;

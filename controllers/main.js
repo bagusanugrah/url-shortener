@@ -339,3 +339,14 @@ exports.getStat = async (req, res, next) => {
     error500(error, next);
   }
 };
+
+exports.getDonasi = (req, res, next) => {
+  try {
+    res.render('main/donasi', {
+      pageTitle: 'Donasi',
+      page: 'donasi',
+    });
+  } catch (error) {
+    error500(error, next);
+  }
+};
