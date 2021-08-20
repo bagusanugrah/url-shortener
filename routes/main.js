@@ -62,6 +62,8 @@ router.get('/ketentuan', mainController.getKetentuan);
 
 router.get('/stat', mainController.getStat);
 
+router.get('/donasi', mainController.getDonasi);
+
 router.get('/:key', mainController.getRedirect, errorController.get404);
 
 module.exports = router;
