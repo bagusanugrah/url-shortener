@@ -48,7 +48,10 @@ exports.getIndex = async (req, res, next) => {
 
 exports.postShorten = async (req, res, next) => {
   try {
-    const url = req.body.url;// ambil url dari form
+    let url = req.body.url;// ambil url dari form
+    if (!url.includes('http')) {// jika url tidak mengandung http
+      url = `http://${url}`;
+    }
     const secondId = 'url-' + nanoid(16);// buat random secondId
     let parameter = nanoid(6);// buat random parameter
     const expiredAt = Date.now() + 30000;// (3600000*24*3)
