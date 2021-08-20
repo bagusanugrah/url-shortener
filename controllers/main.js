@@ -312,7 +312,7 @@ exports.postReportBug = async (req, res, next) => {
 exports.getKetentuan = (req, res, next) => {
   try {
     res.render('main/ketentuan', {
-      pageTitle: 'Ketentuan Pemakaian',
+      pageTitle: 'Ketentuan',
       page: 'ketentuan',
     });
   } catch (error) {
