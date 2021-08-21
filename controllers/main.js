@@ -277,7 +277,7 @@ exports.postReportBug = async (req, res, next) => {
     if (screenshot) {
       transporter.sendMail({
         to: 'bagus.anugrah71@gmail.com',
-        from: `${req.domain}`,
+        from: process.env.NODEMAILER_EMAIL,
         subject: `Laporan Bug - ${new Date().toISOString()}`,
         html: `<p><pre>${penjelasan}</pre></p>`,
         attachments: [
@@ -296,7 +296,7 @@ exports.postReportBug = async (req, res, next) => {
     } else {// jika tidak ada screenshot yang diupload
       transporter.sendMail({
         to: 'bagus.anugrah71@gmail.com',
-        from: `${req.domain}`,
+        from: process.env.NODEMAILER_EMAIL,
         subject: `Laporan Bug - ${new Date().toISOString()}`,
         html: `<p><pre>${penjelasan}</pre></p>`,
       });
