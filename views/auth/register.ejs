@@ -6,14 +6,14 @@
         <%- include('../includes/components/alert/problem.ejs') %>
     <% } %>
     <div class="card shadow-lg border-0 rounded-lg mb-4">
-        <div class="card-header justify-content-center"><h3 class="fw-light my-4">Create Account</h3></div>
+        <div class="card-header justify-content-center"><h3 class="fw-light my-4">Daftar</h3></div>
         <div class="card-body">
             <!-- Registration form-->
             <form action="/register" method="POST" novalidate>
                 <!-- Form Group (email address)            -->
                 <div class="mb-3">
                     <label class="small mb-1" for="inputEmailAddress">Email <span style="color: red;">*</span></label>
-                    <input class="form-control" id="inputEmailAddress" value="<%= oldInput.email %>" name="email" type="email" aria-describedby="emailHelp" placeholder="Enter email address">
+                    <input class="form-control" id="inputEmailAddress" value="<%= oldInput.email %>" name="email" type="email" aria-describedby="emailHelp" placeholder="Masukkan email">
                 </div>
                 <!-- Form Row    -->
                 <div class="row gx-3">
@@ -21,14 +21,14 @@
                         <!-- Form Group (password)-->
                         <div class="mb-3">
                             <label class="small mb-1" for="inputPassword">Password <span style="color: red;">*</span></label>
-                            <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Enter password">
+                            <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Masukkan password">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <!-- Form Group (confirm password)-->
                         <div class="mb-3">
-                            <label class="small mb-1" for="inputConfirmPassword">Confirm Password <span style="color: red;">*</span></label>
-                            <input class="form-control" id="inputConfirmPassword" name="confirmPassword" type="password" placeholder="Confirm password">
+                            <label class="small mb-1" for="inputConfirmPassword">Konfirmasi Password <span style="color: red;">*</span></label>
+                            <input class="form-control" id="inputConfirmPassword" name="confirmPassword" type="password" placeholder="Konfirmasi password">
                         </div>
                     </div>
                 </div>
@@ -36,11 +36,11 @@
                 <p style="margin: 0; padding: 0;" class="mb-3"><span style="color: red;">*</span> artinya wajib diisi</p>
                 <p style="margin: 0; padding: 0;" class="mb-3"><a class="small" href="/form-verifikasi-email">Verifikasi Email</a></p>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="btn btn-primary" type="submit">Create Account</button>
+                <button class="btn btn-primary" type="submit">Buat Akun</button>
             </form>
         </div>
         <div class="card-footer text-center">
-            <div class="small"><a href="/login">Have an account? Go to login</a></div>
+            <div class="small"><a href="/login">Sudah punya akun? Login di sini</a></div>
         </div>
     </div>
 <%- include('../includes/bottom.ejs') %>
