@@ -13,16 +13,16 @@
                 <!-- Form Group (email address)-->
                 <div class="mb-3">
                     <label class="small mb-1" for="inputEmailAddress">Email <span style="color: red;">*</span></label>
-                    <input class="form-control" id="inputEmailAddress" name="email" value="<%= oldInput.email %>" type="email" placeholder="Enter email address">
+                    <input class="form-control" id="inputEmailAddress" name="email" value="<%= oldInput.email %>" type="email" placeholder="Masukkan email">
                 </div>
                 <!-- Form Group (password)-->
                 <div class="mb-3">
                     <label class="small mb-1" for="inputPassword">Password <span style="color: red;">*</span></label>
-                    <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Enter password">
+                    <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Masukkan password">
                 </div>
                 <!-- Form Group (login box)-->
                 <div class="d-flex align-items-center justify-content-between mt-4 mb-3">
-                    <a class="small" href="/form-reset-password">Forgot Password?</a>
+                    <a class="small" href="/form-reset-password">Lupa Password?</a>
                     <a class="small" href="/form-verifikasi-email">Verifikasi Email</a>
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="btn btn-primary" type="submit">Login</button>
@@ -31,7 +31,7 @@
             </form>
         </div>
         <div class="card-footer text-center">
-            <div class="small"><a href="/register">Need an account? Sign up!</a></div>
+            <div class="small"><a href="/register">Belum punya akun? Daftar di sini</a></div>
         </div>
     </div>
 <%- include('../includes/bottom.ejs') %>

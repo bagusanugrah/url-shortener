@@ -10,6 +10,7 @@ exports.getLogin = (req, res, next) => {
   try {
     res.render('auth/login', {
       pageTitle: 'Login',
+      metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
       oldInput: {email: ''},
     });
   } catch (error) {
@@ -27,6 +28,7 @@ exports.postLogin = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/login', {
         pageTitle: 'Login',
+        metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -52,6 +54,7 @@ exports.postLogin = async (req, res, next) => {
     } else {// jika inputan password tidak sama dengan yang di database
       res.render('auth/login', {
         pageTitle: 'Login',
+        metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
         problemMessage: 'Password yang anda masukkan salah!',
         oldInput: {email},
       });
@@ -78,7 +81,8 @@ exports.postLogout = (req, res, next) => {
 exports.getRegister = (req, res, next) => {
   try {
     res.render('auth/register', {
-      pageTitle: 'Sign Up',
+      pageTitle: 'Daftar',
+      metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
       oldInput: {email: ''},
     });
   } catch (error) {
@@ -98,7 +102,8 @@ exports.postRegister = async (req, res, next) => {
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/register', {
-        pageTitle: 'Sign Up',
+        pageTitle: 'Daftar',
+        metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -110,7 +115,8 @@ exports.postRegister = async (req, res, next) => {
     await EmailVerification.create({token, email, expiredAt});// simpan token baru dalam database
 
     res.render('auth/register', {
-      pageTitle: 'Sign Up',
+      pageTitle: 'Daftar',
+      metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
       successMessage: 'Registrasi berhasil! Silahkan cek inbox email anda untuk verifikasi email.',
       oldInput: {email: ''},
     });
@@ -125,6 +131,7 @@ exports.getFormVerifikasiEmail = (req, res, next) => {
   try {
     res.render('auth/form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
+      metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
     });
   } catch (error) {
     error500(error, next);
@@ -140,6 +147,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-verifikasi-email', {
         pageTitle: 'Form Verifikasi Email',
+        metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
       });
     }
@@ -173,6 +181,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
     res.render('auth/form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
+      metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
       successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
     });
   } catch (error) {
@@ -229,6 +238,7 @@ exports.getResetForm = (req, res, next) => {
   try {
     res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
+      metaDescription: 'Ganti password anda di sini.',
       oldInput: '',
     });
   } catch (error) {
@@ -246,6 +256,7 @@ exports.postResetForm = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-reset-password', {
         pageTitle: 'Reset Password',
+        metaDescription: 'Ganti password anda di sini.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -268,6 +279,7 @@ exports.postResetForm = async (req, res, next) => {
 
     res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
+      metaDescription: 'Ganti password anda di sini.',
       successMessage: 'Link untuk ganti password telah dikirim ke email anda.',
       oldInput: '',
     });
