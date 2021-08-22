@@ -117,7 +117,7 @@ exports.postRegister = async (req, res, next) => {
     res.render('auth/register', {
       pageTitle: 'Daftar',
       metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
-      successMessage: 'Registrasi berhasil! Silahkan cek inbox email anda untuk verifikasi email.',
+      successMessage: 'Buat akun berhasil! Silahkan cek kotak masuk email anda untuk verifikasi email.',
       oldInput: {email: ''},
     });
 
