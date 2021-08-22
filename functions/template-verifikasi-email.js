@@ -154,8 +154,19 @@ const templateVerifikasiEmail = (req, token) => {
                             </td>
                         </tr>
                         <tr>
-                            <td bgcolor="#ffffff" align="justify" style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <td bgcolor="#ffffff" align="justify" style="padding: 0px 30px 20px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                                 <p style="margin: 0;">Link di atas akan otomatis terhapus dari database dalam waktu 5 menit ke depan semenjak anda menerima email ini dan akan langsung dihapus tepat setelah email anda diverifikasi.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#e0e5ec" align="center" style="padding: 30px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#96c0ff" align="justify" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">Jangan balas email ini karena email ini bukan dikirim oleh manusia tapi dikirim oleh program. Jika ingin menghubungi developer <a href="https://bagusanugrah.my.id/#contact" target="_blank">KLIK DI SINI</a>.</p>
                             </td>
                         </tr>
                     </table>
@@ -165,7 +176,7 @@ const templateVerifikasiEmail = (req, token) => {
                 <td bgcolor="#e0e5ec" align="center" style="padding: 0px 10px 0px 10px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                         <tr>
-                            <td bgcolor="#e0e5ec" align="left" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;"> <br>
+                            <td bgcolor="#e0e5ec" align="left" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;">
                             </td>
                         </tr>
                     </table>
