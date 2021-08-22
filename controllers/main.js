@@ -121,7 +121,7 @@ exports.postShorten = async (req, res, next) => {
       limit: urlsPerPage,
     }) : null;
     if (req.isLoggedIn) {// jika user logged in
-      return res.render('main/user-index', {
+      return res.status(201).render('main/user-index', {
         successMessage: `URL berhasil dibuat secara random, URL baru ada di baris paling atas. Anda bisa mengedit URL 
         dengan mengklik tombol pensil warna kuning dan menghapus URL dengan mengklik tombol trash warna merah.`,
         shortenedUrls,
@@ -130,7 +130,7 @@ exports.postShorten = async (req, res, next) => {
         page: 'home',
       });
     }
-    res.render('main/index', {
+    res.status(201).render('main/index', {
       successMessage: `
       Berikut adalah URL anda <a href="${req.address}/${parameter}" target="_blank">${req.address}/${parameter}</a>  (besar kecil huruf berpengaruh)
       <br>

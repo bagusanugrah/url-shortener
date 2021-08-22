@@ -114,7 +114,7 @@ exports.postRegister = async (req, res, next) => {
     await User.create({secondId, email, password: hashedPassword, status, expiredAt});// membuat user baru
     await EmailVerification.create({token, email, expiredAt});// simpan token baru dalam database
 
-    res.render('auth/register', {
+    res.status(201).render('auth/register', {
       pageTitle: 'Daftar',
       metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
       successMessage: 'Buat akun berhasil! Silahkan cek kotak masuk email anda untuk verifikasi email.',
@@ -179,7 +179,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       sendEmailVerificationLink(req, email, token);// kirimkan token baru
     }
 
-    res.render('auth/form-verifikasi-email', {
+    res.status(201).render('auth/form-verifikasi-email', {
       pageTitle: 'Form Verifikasi Email',
       metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
       successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
@@ -277,7 +277,7 @@ exports.postResetForm = async (req, res, next) => {
       sendResetPasswordLink(req, email, token);
     }
 
-    res.render('auth/form-reset-password', {
+    res.status(201).render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
       metaDescription: 'Reset password anda di sini.',
       successMessage: 'Link untuk reset password telah dikirim ke email anda.',
