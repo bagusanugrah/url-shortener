@@ -219,9 +219,9 @@ exports.getRedirect = async (req, res, next) => {
     const shortened = await ShortenedUrl.findOne({where: {parameter}});// cari paramater di database
 
     if (guestShortened) {// jika paramater ketemu di guestShortened
-      res.redirect(guestShortened.url);
       guestShortened.expiredAt = Date.now() + 30000;// (3600000*24*3) perbarui masa tenggang penghapusan url
       await guestShortened.save();// perbarui data url
+      res.redirect(guestShortened.url);
     } else if (shortened) {// jika paramater ketemu di shortened
       res.redirect(shortened.url);
     } else {// jika parameter tidak ada di database
