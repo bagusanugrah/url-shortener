@@ -238,7 +238,7 @@ exports.getResetForm = (req, res, next) => {
   try {
     res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
-      metaDescription: 'Ganti password anda di sini.',
+      metaDescription: 'Reset password anda di sini.',
       oldInput: '',
     });
   } catch (error) {
@@ -256,7 +256,7 @@ exports.postResetForm = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-reset-password', {
         pageTitle: 'Reset Password',
-        metaDescription: 'Ganti password anda di sini.',
+        metaDescription: 'Reset password anda di sini.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -279,8 +279,8 @@ exports.postResetForm = async (req, res, next) => {
 
     res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
-      metaDescription: 'Ganti password anda di sini.',
-      successMessage: 'Link untuk ganti password telah dikirim ke email anda.',
+      metaDescription: 'Reset password anda di sini.',
+      successMessage: 'Link untuk reset password telah dikirim ke email anda.',
       oldInput: '',
     });
   } catch (error) {
