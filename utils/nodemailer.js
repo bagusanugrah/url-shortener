@@ -1,5 +1,8 @@
 const nodemailer = require('nodemailer');
 
+const templateVerifikasi = require('../functions/template-verifikasi-email');
+const templateReset = require('../functions/template-reset-password');
+
 const isSecure = process.env.NODEMAILER_ISSECURE === 'true' ? true : false;
 
 const transporter = nodemailer.createTransport({
@@ -21,12 +24,7 @@ const sendEmailVerificationLink = (req, email, token) => {
     to: email,
     from: process.env.NODEMAILER_EMAIL,
     subject: 'Verifikasi Email',
-    html: `
-        <h3>Klik link di bawah ini untuk verifikasi email anda</h3>
-        <p><a href="${req.address}/verifikasi-email/${token}" target="_blank">
-          ${req.address}/verifikasi-email/${token}
-        </a></p>
-        `,
+    html: templateVerifikasi(req, token),
   });
 };
 
@@ -35,12 +33,7 @@ const sendResetPasswordLink = (req, email, token) => {
     to: email,
     from: process.env.NODEMAILER_EMAIL,
     subject: 'Reset Password',
-    html: `
-        <h3>Klik link di bawah ini untuk ganti password anda</h3>
-        <p><a href="${req.address}/reset-password/${token}" target="_blank">
-          ${req.address}/reset-password/${token}
-        </a></p>
-        `,
+    html: templateReset(req, token),
   });
 };
 
