@@ -47,7 +47,7 @@ router.post('/register', [
   body('confirmPassword').isLength({min: 1}).withMessage('Form tidak boleh kosong!')
       .custom((value, {req}) => {
         if (value !== req.body.password) {// jika Confirm Password tidak cocok dengan Password
-          throw new Error('Confirm Password harus sama percis dengan Password!');
+          throw new Error('Konfirmasi Password harus sama percis dengan Password!');
         }
         return true;
       }),

@@ -285,11 +285,13 @@ exports.postReportBug = async (req, res, next) => {
         ],
       });
 
-      fs.unlink(screenshotPath, (error) => {// menghapus file secara asynchronous
-        if (error) {
-          console.log(error);
-        }
-      });
+      setTimeout(() => {
+        fs.unlink(screenshotPath, (error) => {// menghapus file secara asynchronous
+          if (error) {
+            console.log(error);
+          }
+        });
+      }, 60000*3);
     } else {// jika tidak ada screenshot yang diupload
       transporter.sendMail({
         to: 'bagus.anugrah71@gmail.com',
