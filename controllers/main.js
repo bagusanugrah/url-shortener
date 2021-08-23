@@ -52,7 +52,7 @@ exports.postShorten = async (req, res, next) => {
     }
     const secondId = 'url-' + nanoid(16);// buat random secondId
     let parameter = nanoid(6);// buat random parameter
-    const expiredAt = Date.now() + 30000;// (3600000*24*3)
+    const expiredAt = Date.now() + (1000*3600*24*7);// (7 hari)
     let isAvailable = true;
     const validationErrors = validationResult(req);
     const renderPage = req.isLoggedIn ? 'main/user-index' : 'main/index';// cek apakah user logged in atau tidak
@@ -219,7 +219,7 @@ exports.getRedirect = async (req, res, next) => {
     const shortened = await ShortenedUrl.findOne({where: {parameter}});// cari paramater di database
 
     if (guestShortened) {// jika paramater ketemu di guestShortened
-      guestShortened.expiredAt = Date.now() + 30000;// (3600000*24*3) perbarui masa tenggang penghapusan url
+      guestShortened.expiredAt = Date.now() + (1000*3600*24*7);// (7 hari) perbarui masa tenggang penghapusan url
       await guestShortened.save();// perbarui data url
       res.redirect(guestShortened.url);
     } else if (shortened) {// jika paramater ketemu di shortened
