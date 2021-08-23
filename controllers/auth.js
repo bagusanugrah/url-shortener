@@ -38,7 +38,7 @@ exports.postLogin = async (req, res, next) => {
 
     if (doMatch) {// jika inputan password sama dengan yang di database
       // perbarui masa tenggang penghapusan user
-      user.expiredAt = Date.now() + (1000*3600*24);// (1000*3600*24*30*6)
+      user.expiredAt = Date.now() + (1000*3600*24*30*6);// (6 bulan)
       await user.save();
 
       // dimasukkan ke session supaya bisa digunakan di setiap request baru
@@ -96,7 +96,7 @@ exports.postRegister = async (req, res, next) => {
     const email = req.body.email.toLowerCase();// ambil email dari form
     const password = req.body.password;// ambil password dari form
     const status = 'unverified';
-    const expiredAt = Date.now() + (1000*60*5);// (3600000*24)
+    const expiredAt = Date.now() + (1000*60*5);// (5 menit)
     const token = nanoid(32);// membuat token baru
     const validationErrors = validationResult(req);
 
@@ -153,7 +153,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
     }
 
     const user = await User.findOne({where: {email}});// cari user di database
-    const expiredAt = Date.now() + (1000*60*5);// (3600000*24)
+    const expiredAt = Date.now() + (1000*60*5);// (5 menit)
 
     if (tokenData) {// jika token ketemu
       const token = tokenData.token;// ambil tokennya
@@ -221,7 +221,7 @@ exports.postVerifikasiEmail = async (req, res, next) => {
     user.status = 'verified';// perbarui status user menjadi terverifikasi
 
     // perbarui masa tenggang penghapusan user
-    user.expiredAt = Date.now() + (1000*3600*24);// (1000*3600*24*30*6)
+    user.expiredAt = Date.now() + (1000*3600*24*30*6);// (6 bulan)
 
     await user.save();// perbarui data user
     await tokenData.destroy();// menghapus token dari database
@@ -249,7 +249,7 @@ exports.getResetForm = (req, res, next) => {
 exports.postResetForm = async (req, res, next) => {
   try {
     const email = req.body.email.toLowerCase();// ambil email dari form
-    const expiredAt = Date.now() + (1000*60*5);
+    const expiredAt = Date.now() + (1000*60*5);// (5 menit)
     const tokenData = await PasswordReset.findOne({where: {email}});// cari token di database
     const validationErrors = validationResult(req);
 
