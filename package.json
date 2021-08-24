@@ -1,9 +1,10 @@
 {
   "name": "url-shortener",
   "version": "1.0.0",
-  "description": "",
+  "description": "a url shortener app",
   "main": "index.js",
   "scripts": {
+    "start-prod": "node app.js",
     "start": "nodemon app.js"
   },
   "keywords": [],
