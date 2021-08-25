@@ -6,9 +6,10 @@ const templateReset = require('../functions/template-reset-password');
 const isSecure = process.env.NODEMAILER_ISSECURE === 'true' ? true : false;
 
 const transporter = nodemailer.createTransport({
-  host: process.env.NODEMAILER_HOST,
-  port: process.env.NODEMAILER_PORT,
-  secure: isSecure, // jika true pake SSL, jika false pake TLS/STARTTLS
+  service: 'gmail',
+  //  host: process.env.NODEMAILER_HOST,
+  //  port: process.env.NODEMAILER_PORT,
+  //  secure: isSecure, // jika true pake SSL, jika false pake TLS/STARTTLS
   auth: {
     user: process.env.NODEMAILER_EMAIL,
     pass: process.env.NODEMAILER_PASSWORD,
