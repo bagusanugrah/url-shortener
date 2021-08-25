@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const {User, EmailVerification, PasswordReset} = require('../models');
 const {error500} = require('../functions/errors');
-const {sendEmailVerificationLink, sendResetPasswordLink} = require('../utils/nodemailer');
+const {sendEmailVerificationLink, sendResetPasswordLink, connection} = require('../utils/nodemailer');
 
 exports.getLogin = (req, res, next) => {
   try {
@@ -179,11 +179,12 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       sendEmailVerificationLink(req, email, token);// kirimkan token baru
     }
 
-    res.status(201).render('auth/form-verifikasi-email', {
-      pageTitle: 'Form Verifikasi Email',
-      metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
-      successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
-    });
+    await connection(res);
+    // res.status(201).render('auth/form-verifikasi-email', {
+    //   pageTitle: 'Form Verifikasi Email',
+    //   metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
+    //   successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
+    // });
   } catch (error) {
     error500(error, next);
   }

@@ -19,6 +19,26 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const connection = async (res) => {
+  return transporter.verify(function(error, success) {
+    if (error) {
+      console.log(error);
+      return res.status(422).render('auth/form-verifikasi-email', {
+        pageTitle: 'Form Verifikasi Email',
+        metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
+        problemMessage: error,
+      });
+    } else {
+      console.log('Server is ready to take our messages');
+      res.status(201).render('auth/form-verifikasi-email', {
+        pageTitle: 'Form Verifikasi Email',
+        metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
+        successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
+      });
+    }
+  });
+};
+
 const sendEmailVerificationLink = (req, email, token) => {
   return transporter.sendMail({// kirimkan token yang ketemu tadi
     to: email,
@@ -38,6 +58,7 @@ const sendResetPasswordLink = (req, email, token) => {
 };
 
 module.exports = {
+  connection,
   transporter,
   sendEmailVerificationLink,
   sendResetPasswordLink,
