@@ -12,9 +12,6 @@ exports.get500 = (error, req, res, next) => {// middleware ini dijalankan ketika
     metaKeywords: '500',
     metaAuthor: 'Bagus Anugrah',
     page: '',
-    domain: req.domain,
-    address: req.address,
-    isLoggedIn: req.isLoggedIn,
   });
 };
 
