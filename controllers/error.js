@@ -15,7 +15,6 @@ exports.get500 = (error, req, res, next) => {// middleware ini dijalankan ketika
     domain: req.domain,
     address: req.address,
     isLoggedIn: req.isLoggedIn,
-    csrfToken: req.csrfToken(),
   });
 };
 
