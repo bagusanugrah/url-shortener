@@ -1,6 +1,7 @@
 exports.get404 = (req, res, next) => {
   res.status(404).render('error/404', {
     pageTitle: 'Halaman Tidak Ditemukan!',
+    page: 'error',
   });
 };
 
@@ -8,6 +9,7 @@ exports.get500 = (error, req, res, next) => {// middleware ini dijalankan ketika
   const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
   res.status(statusCode).render('error/500', {
     pageTitle: 'Terjadi kesalahan teknis!',
+    page: 'error',
   });
 };
 
@@ -18,5 +20,6 @@ exports.getUnderConstruction = (req, res, next) => {
   }
   res.render('error/under-construction', {
     pageTitle: 'Under Construction',
+    page: 'error',
   });
 };
