@@ -165,7 +165,7 @@ const templateVerifikasiEmail = (req, token) => {
                 <td bgcolor="#e0e5ec" align="center" style="padding: 30px 10px 0px 10px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                         <tr>
-                            <td bgcolor="#96c0ff" align="justify" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <td bgcolor="#cfe2ff" align="justify" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #084298; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                                 <p style="margin: 0;">Jangan balas email ini karena email ini bukan dikirim oleh manusia tapi dikirim oleh program. Jika ingin menghubungi developer <a href="https://bagusanugrah.my.id/#contact" target="_blank">KLIK DI SINI</a>.</p>
                             </td>
                         </tr>
