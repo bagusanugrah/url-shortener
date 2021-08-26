@@ -39,6 +39,8 @@ const fileStorage = multer.diskStorage({// mendeklarasikan penyimpanan untuk fil
 app.set('view engine', 'ejs');// registrasi template engine
 app.set('views', 'views');// lokasi file yang ingin dirender oleh template engine
 
+app.use(localVariables);// supaya variable bisa dipakai di semua render views
+
 app.use((req, res, next) => {// change file/directory permissions
   fs.chmodSync(path.join(__dirname, 'upload/images'), 0o777);
   next();
@@ -90,8 +92,6 @@ app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.prop
     error500(error, next);
   }
 });
-
-app.use(localVariables);// supaya variable bisa dipakai di semua render views
 
 app.use(dataRemover);// penghapus otomatis
 
