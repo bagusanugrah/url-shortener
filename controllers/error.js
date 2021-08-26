@@ -8,10 +8,6 @@ exports.get500 = (error, req, res, next) => {// middleware ini dijalankan ketika
   const statusCode = error.httpStatusCode ? error.httpStatusCode : 500;
   res.status(statusCode).render('error/500', {
     pageTitle: 'Terjadi kesalahan teknis!',
-    metaDescription: 'Internal Server Error',
-    metaKeywords: '500',
-    metaAuthor: 'Bagus Anugrah',
-    page: '',
   });
 };
 
