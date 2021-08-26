@@ -1,6 +1,6 @@
 require('dotenv').config();// supaya bisa akses variabel dari file .env dengan process.env.VARIABEL
 const path = require('path');
-const fs = require('fs');
+// const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -39,10 +39,10 @@ const fileStorage = multer.diskStorage({// mendeklarasikan penyimpanan untuk fil
 app.set('view engine', 'ejs');// registrasi template engine
 app.set('views', 'views');// lokasi file yang ingin dirender oleh template engine
 
-app.use((req, res, next) => {// change file/directory permissions
-  fs.chmodSync(path.join(__dirname, 'upload/images'), 0o777);
-  next();
-});
+// app.use((req, res, next) => {// change file/directory permissions
+//   fs.chmodSync(path.join(__dirname, 'upload/images'), 0o777);
+//   next();
+// });
 
 app.use(bodyParser.urlencoded({extended: false}));
 // middleware bodyParser.urlencoded() memparsing body request sebelum menjalankan next()
