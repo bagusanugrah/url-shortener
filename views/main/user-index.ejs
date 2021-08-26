@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="card mb-4">
-        <div class="card-body">
+        <div class="card-body d-flex justify-content-center">
             <% if (shortenedUrls.length > 0) { %>
               <% let nomor = 1; %>
             <table class="table table-bordered table-striped table-hover">
@@ -29,7 +29,7 @@
                   <tr>
                     <th scope="col" class="text-center">#</th>
                     <th scope="col">URL</th>
-                    <th scope="col" class="text-center">Action</th>
+                    <th scope="col" class="text-center">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -38,14 +38,14 @@
                         <th scope="row" class="text-center"><%= nomor %></th>
                         <td><a href="<%= address %>/<%= shortenedUrls[i].parameter %>" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= shortenedUrls[i].url %>"><%= address %>/<%= shortenedUrls[i].parameter %></a></td>
                         <td class="text-center">
-                            <a href="<%= address %>/edit/<%= shortenedUrls[i].parameter %>" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                            <a href="<%= address %>/edit/<%= shortenedUrls[i].parameter %>" class="btn btn-sm btn-warning mb-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                 <i class="far fa-edit"></i>
                             </a>
                             <form action="/delete" method="POST" style="display: inline;">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <input type="hidden" name="urlId" value="<%= shortenedUrls[i].secondId %>">
-                                <button class="btn btn-sm btn-danger" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
-                                    <i class="far fa-trash-alt"></i>
+                                <button class="btn btn-sm btn-danger mb-1" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </form>
                         </td>
