@@ -28,7 +28,7 @@ const csrfProtection = csrf();
 
 const fileStorage = multer.diskStorage({// mendeklarasikan penyimpanan untuk file upload
   destination: (req, file, callback) => {// lokasi penyimpanan
-    callback(null, 'upload/images');
+    callback(null, path.join(__dirname, 'upload/images'));
   },
   filename: (req, file, callback) => {// nama file yang akan disimpan
     callback(null, `screenshot-${new Date().toISOString()}-${file.originalname}` );
