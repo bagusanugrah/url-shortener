@@ -1,6 +1,6 @@
 require('dotenv').config();// supaya bisa akses variabel dari file .env dengan process.env.VARIABEL
 const path = require('path');
-const fs = require('fs');
+// const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -41,10 +41,10 @@ app.set('views', 'views');// lokasi file yang ingin dirender oleh template engin
 
 app.use(localVariables);// supaya variable bisa dipakai di semua render views
 
-app.use((req, res, next) => {// change file/directory permissions
-  fs.chmodSync(path.join(__dirname, 'upload/images'), 0o777);
-  next();
-});
+// app.use((req, res, next) => {// change file/directory permissions
+//   fs.chmodSync(path.join(__dirname, 'upload/images'), 0o777);
+//   next();
+// });
 
 app.use(bodyParser.urlencoded({extended: false}));
 // middleware bodyParser.urlencoded() memparsing body request sebelum menjalankan next()
