@@ -41,7 +41,12 @@ app.set('views', 'views');// lokasi file yang ingin dirender oleh template engin
 app.use(bodyParser.urlencoded({extended: false}));
 // middleware bodyParser.urlencoded() memparsing body request sebelum menjalankan next()
 // bodyparser akan mengambil data dari form dan datanya bisa diakses dari req.body.formName
-app.use(multer({storage: fileStorage}).single('screenshot'));// langsung menyimpan file di storage
+app.use(multer({
+  limits: {
+    fieldSize: 1024 * 3005,
+    fieldNameSize: 500,
+  },
+  storage: fileStorage}).single('screenshot'));// langsung menyimpan file di storage
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/donasi', express.static(path.join(__dirname, 'public/img/donasi')));

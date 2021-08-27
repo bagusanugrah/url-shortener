@@ -54,6 +54,17 @@ router.post('/report-bug', [
       return true;// lolos validasi
     }
     throw new Error('Upload gambar yang valid! (png/jpg/jpeg)');// tidak lolos validasi
+  }).custom((value, {req}) => {
+    const fileSize = req.file ? +req.file.size : null;
+
+    if (!fileSize) {// jika tidak ada screenshot yang diupload
+      return true;// tidak usah validasi
+    }
+
+    if (fileSize <= 1024*3000) {
+      return true;
+    }
+    throw new Error('Gambar yang anda upload melebihi ukuran maksimal! Ukuran maksimal adalah 3MB');
   }),
   body('penjelasan').isLength({min: 1}).withMessage('Form tidak boleh kosong!'),
 ], mainController.postReportBug);
