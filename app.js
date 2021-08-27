@@ -43,8 +43,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 // bodyparser akan mengambil data dari form dan datanya bisa diakses dari req.body.formName
 app.use(multer({
   limits: {
-    fieldSize: 1024 * 3005,
-    fieldNameSize: 500,
+    fieldSize: 1024 * 3000, // max file upload 3MB untuk multer (default 1MB), tapi untuk server belum tentu bisa
+    fieldNameSize: 500, // 500 bytes (default 100 bytes)
   },
   storage: fileStorage}).single('screenshot'));// langsung menyimpan file di storage
 

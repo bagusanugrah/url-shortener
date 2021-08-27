@@ -61,10 +61,10 @@ router.post('/report-bug', [
       return true;// tidak usah validasi
     }
 
-    if (fileSize <= 1024*3000) {
+    if (fileSize < 1024*1000) {
       return true;
     }
-    throw new Error('Gambar yang anda upload melebihi ukuran maksimal! Ukuran maksimal adalah 3MB');
+    throw new Error('Gambar yang anda upload melebihi ukuran maksimal! Ukuran maksimal adalah 1MB');
   }),
   body('penjelasan').isLength({min: 1}).withMessage('Form tidak boleh kosong!'),
 ], mainController.postReportBug);
