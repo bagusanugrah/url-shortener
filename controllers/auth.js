@@ -117,7 +117,7 @@ exports.postRegister = async (req, res, next) => {
     res.status(201).render('auth/register', {
       pageTitle: 'Daftar',
       metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
-      successMessage: 'Buat akun berhasil! Silahkan cek kotak masuk email anda untuk verifikasi email.',
+      successMessage: 'Buat akun berhasil! Silahkan cek kotak masuk email anda untuk verifikasi email. Jika di kotak masuk tidak ada, coba cek di folder spam.',
       oldInput: {email: ''},
     });
 
@@ -281,7 +281,7 @@ exports.postResetForm = async (req, res, next) => {
     res.status(201).render('auth/form-reset-password', {
       pageTitle: 'Reset Password',
       metaDescription: 'Reset password anda di sini.',
-      successMessage: 'Link untuk reset password telah dikirim ke email anda.',
+      successMessage: 'Link untuk reset password telah dikirim ke email anda. Jika di kotak masuk tidak ada, coba cek di folder spam.',
       oldInput: '',
     });
   } catch (error) {

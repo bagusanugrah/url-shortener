@@ -34,7 +34,7 @@ const connection = async (res) => {
       res.status(201).render('auth/form-verifikasi-email', {
         pageTitle: 'Form Verifikasi Email',
         metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
-        successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
+        successMessage: 'Link untuk verifikasi email telah dikirim ke email anda. Jika di kotak masuk tidak ada, coba cek di folder spam.',
       });
     }
   });
