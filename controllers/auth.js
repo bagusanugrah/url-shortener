@@ -130,7 +130,7 @@ exports.postRegister = async (req, res, next) => {
 exports.getFormVerifikasiEmail = (req, res, next) => {
   try {
     res.render('auth/form-verifikasi-email', {
-      pageTitle: 'Form Verifikasi Email - idurl.id',
+      pageTitle: 'Verifikasi Email - idurl.id',
       metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
     });
   } catch (error) {
@@ -146,7 +146,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-verifikasi-email', {
-        pageTitle: 'Form Verifikasi Email - idurl.id',
+        pageTitle: 'Verifikasi Email - idurl.id',
         metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
       });
@@ -181,7 +181,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
     await connection(res);
     // res.status(201).render('auth/form-verifikasi-email', {
-    //   pageTitle: 'Form Verifikasi Email - idurl.id',
+    //   pageTitle: 'Verifikasi Email - idurl.id',
     //   metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
     //   successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
     // });
