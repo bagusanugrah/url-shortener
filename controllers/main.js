@@ -2,11 +2,13 @@ const path = require('path');
 const fs = require('fs');
 
 const {nanoid} = require('nanoid');
+const {customAlphabet} = require('nanoid/async');
 const {validationResult} = require('express-validator');
 
 const {GuestShortenedUrl, ShortenedUrl, User} = require('../models');
 const {error500} = require('../functions/errors');
 const {transporter} = require('../utils/nodemailer');
+const {alphanumeric} = require('../functions/alphanumeric');
 
 /* untuk pagination */
 const urlsPerPage = 5;// banyak url yang ditempilkan perhalaman
@@ -51,7 +53,8 @@ exports.postShorten = async (req, res, next) => {
       url = `http://${url}`;
     }
     const secondId = 'url-' + nanoid(16);// buat random secondId
-    let parameter = nanoid(6);// buat random parameter
+    const randomAlphanumeric = customAlphabet(alphanumeric(), 6);
+    let parameter = await randomAlphanumeric();// buat random parameter
     const expiredAt = Date.now() + (1000*3600*24*7);// (7 hari)
     let isAvailable = true;
     const validationErrors = validationResult(req);
@@ -103,7 +106,7 @@ exports.postShorten = async (req, res, next) => {
       if (!guestUrl && !url) {// jika random parameter tidak ada di database
         isAvailable = false;// tidak usah bikin random parameter baru
       } else {// jika random parameter ada di database
-        parameter = nanoid(6);// buat random parameter baru
+        parameter = await randomAlphanumeric();// buat random parameter baru
       }
     }
 
