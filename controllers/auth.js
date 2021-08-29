@@ -9,8 +9,8 @@ const {sendEmailVerificationLink, sendResetPasswordLink, connection} = require('
 exports.getLogin = (req, res, next) => {
   try {
     res.render('auth/login', {
-      pageTitle: 'Login',
-      metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
+      pageTitle: 'Login - idurl.id',
+      metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
       oldInput: {email: ''},
     });
   } catch (error) {
@@ -27,8 +27,8 @@ exports.postLogin = async (req, res, next) => {
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/login', {
-        pageTitle: 'Login',
-        metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
+        pageTitle: 'Login - idurl.id',
+        metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -53,8 +53,8 @@ exports.postLogin = async (req, res, next) => {
       });
     } else {// jika inputan password tidak sama dengan yang di database
       res.render('auth/login', {
-        pageTitle: 'Login',
-        metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
+        pageTitle: 'Login - idurl.id',
+        metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
         problemMessage: 'Password yang anda masukkan salah!',
         oldInput: {email},
       });
@@ -81,8 +81,8 @@ exports.postLogout = (req, res, next) => {
 exports.getRegister = (req, res, next) => {
   try {
     res.render('auth/register', {
-      pageTitle: 'Daftar',
-      metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
+      pageTitle: 'Daftar - idurl.id',
+      metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
       oldInput: {email: ''},
     });
   } catch (error) {
@@ -102,8 +102,8 @@ exports.postRegister = async (req, res, next) => {
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/register', {
-        pageTitle: 'Daftar',
-        metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
+        pageTitle: 'Daftar - idurl.id',
+        metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -115,8 +115,8 @@ exports.postRegister = async (req, res, next) => {
     await EmailVerification.create({token, email, expiredAt});// simpan token baru dalam database
 
     res.status(201).render('auth/register', {
-      pageTitle: 'Daftar',
-      metaDescription: 'Daftar dan mulai membuat custom url anda sendiri.',
+      pageTitle: 'Daftar - idurl.id',
+      metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
       successMessage: 'Buat akun berhasil! Silahkan cek kotak masuk email anda untuk verifikasi email. Jika di kotak masuk tidak ada, coba cek di folder spam.',
       oldInput: {email: ''},
     });
@@ -130,7 +130,7 @@ exports.postRegister = async (req, res, next) => {
 exports.getFormVerifikasiEmail = (req, res, next) => {
   try {
     res.render('auth/form-verifikasi-email', {
-      pageTitle: 'Form Verifikasi Email',
+      pageTitle: 'Form Verifikasi Email - idurl.id',
       metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
     });
   } catch (error) {
@@ -146,7 +146,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-verifikasi-email', {
-        pageTitle: 'Form Verifikasi Email',
+        pageTitle: 'Form Verifikasi Email - idurl.id',
         metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
       });
@@ -181,7 +181,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
 
     await connection(res);
     // res.status(201).render('auth/form-verifikasi-email', {
-    //   pageTitle: 'Form Verifikasi Email',
+    //   pageTitle: 'Form Verifikasi Email - idurl.id',
     //   metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
     //   successMessage: 'Link untuk verifikasi email telah dikirim ke email anda.',
     // });
@@ -238,7 +238,7 @@ exports.postVerifikasiEmail = async (req, res, next) => {
 exports.getResetForm = (req, res, next) => {
   try {
     res.render('auth/form-reset-password', {
-      pageTitle: 'Reset Password',
+      pageTitle: 'Reset Password - idurl.id',
       metaDescription: 'Reset password anda di sini.',
       oldInput: '',
     });
@@ -256,7 +256,7 @@ exports.postResetForm = async (req, res, next) => {
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-reset-password', {
-        pageTitle: 'Reset Password',
+        pageTitle: 'Reset Password - idurl.id',
         metaDescription: 'Reset password anda di sini.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
@@ -279,7 +279,7 @@ exports.postResetForm = async (req, res, next) => {
     }
 
     res.status(201).render('auth/form-reset-password', {
-      pageTitle: 'Reset Password',
+      pageTitle: 'Reset Password - idurl.id',
       metaDescription: 'Reset password anda di sini.',
       successMessage: 'Link untuk reset password telah dikirim ke email anda. Jika di kotak masuk tidak ada, coba cek di folder spam.',
       oldInput: '',
