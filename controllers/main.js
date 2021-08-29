@@ -135,7 +135,7 @@ exports.postShorten = async (req, res, next) => {
     }
     res.status(201).render('main/index', {
       successMessage: `
-      Berikut adalah URL anda <a href="${req.address}/${parameter}" target="_blank">${req.address}/${parameter}</a>  (besar kecil huruf berpengaruh)
+      Berikut adalah URL anda <a href="${req.address}/${parameter}" target="_blank">${req.domain}/${parameter}</a>  (besar kecil huruf berpengaruh)
       <br>
       <br>
       Penting:<br>
