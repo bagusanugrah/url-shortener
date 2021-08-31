@@ -15,6 +15,9 @@
             <%- include('./components/footer.ejs') %>
         </div>
         <%- include('./components/body-script.ejs') %>
+        <% if (page === 'home' && !isLoggedIn) { %>
+            <script src="/js/index.js"></script>
+        <% } %>
 
 </body>
 </html>
