@@ -227,7 +227,7 @@ exports.deleteGuestUrl = async (req, res, next) => {
       return res.status(200).json({message: 'Success!'});
     }
   } catch (error) {
-    res.status(500).json({message: 'Gagal hapus URL!'});
+    return res.status(500).json({message: 'Gagal hapus URL!'});
   }
 };
 
