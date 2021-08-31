@@ -75,4 +75,5 @@ function deleteRow(element, oldParameter) {
     return parameter !== oldParameter;
   });
   localStorage.setItem('parameters', parametersArray.toString());// memperbarui local storage
+  location.replace('/');
 }
