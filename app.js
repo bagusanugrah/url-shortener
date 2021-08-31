@@ -73,6 +73,7 @@ app.use(async (req, res, next) => {// ditaruh di atas semua routes agar req.prop
     const address = process.env.NODE_ENV === 'development' ?
     `${protocol}://${domain}:${port}` : `${protocol}://${domain}`;
 
+    req.protocol = protocol;
     req.domain = domain;
     req.address = address;
 
