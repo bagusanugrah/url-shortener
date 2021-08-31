@@ -215,6 +215,22 @@ exports.postDeleteUrl = async (req, res, next) => {
   }
 };
 
+exports.deleteGuestUrl = async (req, res, next) => {
+  try {
+    const parameter = req.params.parameter;
+    const url = await GuestShortenedUrl.findOne({where: {parameter}});
+
+    if (!url) {
+      return res.status(200).json({message: 'Success!'});
+    } else {
+      await url.destroy();
+      return res.status(200).json({message: 'Success!'});
+    }
+  } catch (error) {
+    res.status(500).json({message: 'Gagal hapus URL!'});
+  }
+};
+
 exports.getRedirect = async (req, res, next) => {
   try {
     const parameter = req.params.key;// ambil parameter

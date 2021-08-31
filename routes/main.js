@@ -38,6 +38,8 @@ router.post('/edit/:key', body('inputParam').isLength({min: 1}).withMessage('For
 
 router.post('/delete', mainController.postDeleteUrl);
 
+router.delete('/guest-url/:parameter', mainController.deleteGuestUrl);
+
 router.get('/report-bug', mainController.getReportBug);
 
 router.post('/report-bug', [
