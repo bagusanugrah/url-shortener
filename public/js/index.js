@@ -30,11 +30,7 @@ if (typeof(Storage) !== 'undefined') {// jika browser mempunyai storage
 
 function urlsCard() {
   return `<div class="card mb-4">
-  <div class="card-body justify-content-center">
-      <div class="alert alert-primary" role="alert">
-      List URL di bawah ini disimpan pada browser storage anda, jika 
-      anda menghapusnya maka tidak akan berpengaruh pada database, sehingga URL masih tetap utuh dan masih bisa 
-      digunakan.</div>
+  <div class="card-body d-flex justify-content-center">
       <table class="table table-bordered table-striped table-hover">
           <thead>
           <tr>
@@ -68,12 +64,24 @@ function loadTable(parameters) {
 }
 
 function deleteRow(element, oldParameter) {
-  element.parentNode.parentNode.remove();// menghapus row terkait di html
   var parameters = localStorage.getItem('parameters');// mengambil data dari local storage
   var parametersArray = parameters.split(',');// data-data dari local storage dijadikan array
-  parametersArray = parametersArray.filter(function(parameter) {// menghilangkan data terkait dari array
-    return parameter !== oldParameter;
-  });
-  localStorage.setItem('parameters', parametersArray.toString());// memperbarui local storage
-  location.replace('/');
+  var csrf = document.querySelector('[name=_csrf]').value;
+
+  fetch(`/guest-url/${oldParameter}`, {// menghapus dari database
+    method: 'DELETE',
+    headers: {
+      'csrf-token': csrf,
+    },
+  }).then((result) => result.json())
+      .then((data) => {// jika berhasil dihapus dari database
+        parametersArray = parametersArray.filter(function(parameter) {// menghilangkan data terkait dari array
+          return parameter !== oldParameter;
+        });
+        localStorage.setItem('parameters', parametersArray.toString());// memperbarui local storage
+        element.parentNode.parentNode.remove();// menghapus row terkait di html
+        location.replace('/');
+      }).catch((error) => {// jika gagal menghapus dari database
+        console.log(error);
+      });
 }
