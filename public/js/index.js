@@ -32,7 +32,7 @@ function urlsCard() {
   return `<div class="card mb-4">
   <div class="card-body justify-content-center">
       <div class="alert alert-primary" role="alert">
-      URL-URL di bawah ini disimpan pada browser storage anda, jika 
+      List URL di bawah ini disimpan pada browser storage anda, jika 
       anda menghapusnya maka tidak akan berpengaruh pada database, sehingga URL masih tetap utuh dan masih bisa 
       digunakan.</div>
       <table class="table table-bordered table-striped table-hover">
