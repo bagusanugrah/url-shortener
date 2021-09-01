@@ -11,9 +11,23 @@
                                 <%- include('./components/ads/atas-bawah.ejs') %>
                             </span>
                             <div class="row">
-                                <div class="col-xl-3 d-flex justify-content-center">
-                                    <span class="d-none d-xl-block">
-                                        <%- include('./components/ads/kiri-kanan.ejs') %>
+                                <div class="col-xl-3 justify-content-center">
+                                    <span class="d-block mb-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                              <button type="button" id="translate" class="btn btn-primary">Translate this site</button>
+                                              <div id="translator" class="d-none">
+                                                <div id="google_translate_element"></div>
+                                                <script src="/js/translator.js"></script>
+                                                <script type="text/javascript">
+                                                    function googleTranslateElementInit() {
+                                                    new google.translate.TranslateElement({pageLanguage: 'id'}, 'google_translate_element');
+                                                    }
+                                                    </script>
+                                                    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                                              </div>
+                                            </div>
+                                        </div>
                                     </span>
                                 </div>
                                 <div class="col-xl-6">
