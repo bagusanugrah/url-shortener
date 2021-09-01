@@ -18,4 +18,5 @@ function addMarginTop() {
 
 function addToConsole(){
   console.log(document.getElementsByClassName('goog-te-combo')[0].addEventListener('change', addMarginTop));
+  addMarginTop();
 }
