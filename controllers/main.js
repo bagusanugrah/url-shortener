@@ -368,7 +368,7 @@ exports.getDonasi = (req, res, next) => {
     res.render('main/donasi', {
       pageTitle: 'Donasi',
       metaDescription: 'Silahkan donasikan sebagian harta anda di sini.',
-      metaKeywords: 'donasi, donate, donate me, sedekah',
+      metaKeywords: 'donasi,donate,donate me,sedekah',
       page: 'donasi',
     });
   } catch (error) {
