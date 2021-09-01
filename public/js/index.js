@@ -46,20 +46,68 @@ function urlsCard() {
 }
 
 function loadTable(parameters) {
+  var totalItems = 5;
+  var currentURL = window.location.href;
+  var currentPage = +currentURL.split('=')[currentURL.split('=').length - 1];
+  currentPage = !currentPage ? 1 : currentPage;
+  var skip = totalItems * (currentPage-1);
+
   var parametersArray = parameters.split(',');// data-data dari local storage dijadikan array
   var tableBody = document.getElementById('table-body');
   tableBody.innerHTML = '';
   var number = 1;
-  for (var i = 0; i < parametersArray.length; i++) {
-    var row = document.createElement('tr');// membuat element tr
-    row.innerHTML = '<th scope="row" class="text-center">' + number + '</th>';
-    row.innerHTML += '<td>' + `<a href="https://idurl.id/${parametersArray[i]}" target="_blank">idurl.id/${parametersArray[i]}</a>` + '</td>';
-    row.innerHTML += '<td class="text-center">' +
-    `<button class="btn btn-sm btn-danger" onclick="deleteRow(this, '${parametersArray[i]}')" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
-        <i class="fas fa-trash"></i>
-    </button>` + '</td>';
-    tableBody.appendChild(row);// satu element td utuh dimasukkan ke element tableBody
-    number++;
+  for (var i = 0; i < totalItems; i++) {
+    if (typeof(parametersArray[i+skip]) !== 'undefined') {
+      var row = document.createElement('tr');// membuat element tr
+      row.innerHTML = '<th scope="row" class="text-center">' + number + '</th>';
+      row.innerHTML += '<td>' + `<a href="https://idurl.id/${parametersArray[i+skip]}" target="_blank">idurl.id/${parametersArray[i+skip]}</a>` + '</td>';
+      row.innerHTML += '<td class="text-center">' +
+      `<button class="btn btn-sm btn-danger" onclick="deleteRow(this, '${parametersArray[i+skip]}')" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
+          <i class="fas fa-trash"></i>
+      </button>` + '</td>';
+      tableBody.appendChild(row);// satu element td utuh dimasukkan ke element tableBody
+      number++;
+    }
+  }
+  if (parametersArray.length > totalItems) {
+    loadPagination(parametersArray, currentPage, totalItems);
+  }
+}
+
+function loadPagination(dataArray, currentPage, totalItems) {
+  var totalPages = Math.ceil(dataArray.length/totalItems);
+  var paginationElement = document.getElementById('paginasi');
+  paginationElement.innerHTML = `<nav class="d-flex justify-content-center" aria-label="...">
+  <ul class="pagination pagination" id="ul-paginasi"></ul></nav>`;
+  var paginationUl = document.getElementById('ul-paginasi');
+  if (currentPage !== 1) {
+    paginationUl.innerHTML = `<li class="page-item">
+        <a class="page-link" href="${ currentPage-1 === 1 ? '/' : `/?halaman=${currentPage-1}` }">Previous</a>
+    </li>`;
+  } else {
+    paginationUl.innerHTML = `<li class="page-item disabled">
+        <span class="page-link">Previous</span>
+    </li>`;
+  }
+  for (var i=1; i<=totalPages; i++) {
+    if (currentPage === i) {
+      paginationUl.innerHTML += `<li class="page-item active" aria-current="page">
+          <span class="page-link">${i}</span>
+      </li>`;
+    } else {
+      paginationUl.innerHTML += `<li class="page-item">
+          <a class="page-link" href="${ i === 1 ? '/' : `/?halaman=${i}` }">${i}</a>
+      </li>`;
+    }
+  }
+  if (currentPage !== totalPages) {
+    paginationUl.innerHTML += `<li class="page-item">
+        <a class="page-link" href="/?halaman=${currentPage+1}">Next</a>
+    </li>`;
+  } else {
+    paginationUl.innerHTML += `<li class="page-item disabled">
+        <span class="page-link">Next</span>
+    </li>`;
   }
 }
 
