@@ -10,7 +10,7 @@ exports.getLogin = (req, res, next) => {
   try {
     res.render('auth/login', {
       pageTitle: 'Login - idurl.id',
-      metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
+      // metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
       oldInput: {email: ''},
     });
   } catch (error) {
@@ -28,7 +28,7 @@ exports.postLogin = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/login', {
         pageTitle: 'Login - idurl.id',
-        metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
+        // metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -54,7 +54,7 @@ exports.postLogin = async (req, res, next) => {
     } else {// jika inputan password tidak sama dengan yang di database
       res.render('auth/login', {
         pageTitle: 'Login - idurl.id',
-        metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
+        // metaDescription: 'Login dan mulai membuat custom url anda sendiri.',
         problemMessage: 'Password yang anda masukkan salah!',
         oldInput: {email},
       });
@@ -82,7 +82,7 @@ exports.getRegister = (req, res, next) => {
   try {
     res.render('auth/register', {
       pageTitle: 'Daftar - idurl.id',
-      metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
+      // metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
       oldInput: {email: ''},
     });
   } catch (error) {
@@ -103,7 +103,7 @@ exports.postRegister = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/register', {
         pageTitle: 'Daftar - idurl.id',
-        metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
+        // metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -116,7 +116,7 @@ exports.postRegister = async (req, res, next) => {
 
     res.status(201).render('auth/register', {
       pageTitle: 'Daftar - idurl.id',
-      metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
+      // metaDescription: 'Daftar dan verifikasi email agar bisa mulai membuat custom url anda sendiri.',
       successMessage: 'Buat akun berhasil! Silahkan cek kotak masuk email anda untuk verifikasi email. Jika di kotak masuk tidak ada, coba cek di folder spam.',
       oldInput: {email: ''},
     });
@@ -131,7 +131,7 @@ exports.getFormVerifikasiEmail = (req, res, next) => {
   try {
     res.render('auth/form-verifikasi-email', {
       pageTitle: 'Verifikasi Email - idurl.id',
-      metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
+      // metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
     });
   } catch (error) {
     error500(error, next);
@@ -147,7 +147,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-verifikasi-email', {
         pageTitle: 'Verifikasi Email - idurl.id',
-        metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
+        // metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
         problemMessage: validationErrors.array()[0].msg,
       });
     }
@@ -239,7 +239,7 @@ exports.getResetForm = (req, res, next) => {
   try {
     res.render('auth/form-reset-password', {
       pageTitle: 'Reset Password - idurl.id',
-      metaDescription: 'Reset password anda di sini.',
+      // metaDescription: 'Reset password anda di sini.',
       oldInput: '',
     });
   } catch (error) {
@@ -257,7 +257,7 @@ exports.postResetForm = async (req, res, next) => {
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
       return res.status(422).render('auth/form-reset-password', {
         pageTitle: 'Reset Password - idurl.id',
-        metaDescription: 'Reset password anda di sini.',
+        // metaDescription: 'Reset password anda di sini.',
         problemMessage: validationErrors.array()[0].msg,
         oldInput: {email},
       });
@@ -280,7 +280,7 @@ exports.postResetForm = async (req, res, next) => {
 
     res.status(201).render('auth/form-reset-password', {
       pageTitle: 'Reset Password - idurl.id',
-      metaDescription: 'Reset password anda di sini.',
+      // metaDescription: 'Reset password anda di sini.',
       successMessage: 'Link untuk reset password telah dikirim ke email anda. Jika di kotak masuk tidak ada, coba cek di folder spam.',
       oldInput: '',
     });
