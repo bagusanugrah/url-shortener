@@ -255,7 +255,7 @@ exports.getReportBug = (req, res, next) => {
   try {
     res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
-      metaDescription: 'Laporkan bug di sini.',
+      // metaDescription: 'Laporkan bug di sini.',
       page: 'bug',
     });
   } catch (error) {
@@ -284,7 +284,7 @@ exports.postReportBug = async (req, res, next) => {
       }
       return res.status(422).render('main/report-bug', {
         pageTitle: 'Laporkan Bug',
-        metaDescription: 'Laporkan bug di sini.',
+        // metaDescription: 'Laporkan bug di sini.',
         problemMessage: validationErrors.array()[0].msg,
         page: 'bug',
       });
@@ -322,7 +322,7 @@ exports.postReportBug = async (req, res, next) => {
 
     res.render('main/report-bug', {
       pageTitle: 'Laporkan Bug',
-      metaDescription: 'Laporkan bug di sini.',
+      // metaDescription: 'Laporkan bug di sini.',
       successMessage: 'Terima  kasih atas laporannya, saya akan berusaha mengatasi bug/masalah tersebut.',
       page: 'bug',
     });
@@ -335,7 +335,7 @@ exports.getKetentuan = (req, res, next) => {
   try {
     res.render('main/ketentuan', {
       pageTitle: 'Ketentuan',
-      metaDescription: 'Baca ketentuan-ketentuan idurl.id di sini.',
+      // metaDescription: 'Baca ketentuan-ketentuan idurl.id di sini.',
       page: 'ketentuan',
     });
   } catch (error) {
