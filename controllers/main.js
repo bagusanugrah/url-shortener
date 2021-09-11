@@ -16,7 +16,7 @@ const urlsPerPage = 5;// banyak url yang ditempilkan perhalaman
 
 exports.getIndex = async (req, res, next) => {
   try {
-    if (req.isLoggedIn) {// jika user logged in
+    if (req.loggedInUser) {// jika user logged in
       const currentPage = +req.query.halaman ? +req.query.halaman : 1;// ambil nilai query dari url
       const allUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});// ambil semua url dari database
       const totalUrls = allUrls.length;// banyaknya url di database
@@ -58,7 +58,7 @@ exports.postShorten = async (req, res, next) => {
     const expiredAt = Date.now() + (1000*3600*24*7);// (7 hari)
     let isAvailable = true;
     const validationErrors = validationResult(req);
-    const renderPage = req.isLoggedIn ? 'main/user-index' : 'main/index';// cek apakah user logged in atau tidak
+    const renderPage = req.loggedInUser ? 'main/user-index' : 'main/index';// cek apakah user logged in atau tidak
 
     /* untuk paginasi */
     let currentPage;// ambil nilai query dari url
@@ -67,7 +67,7 @@ exports.postShorten = async (req, res, next) => {
     let totalPages;// banyaknya halaman, Math.ceil() melakukan pembulatan ke atas
     let skipRows;// banyaknya rows yang diskip dihitung dari row pertama
 
-    if (req.isLoggedIn) {
+    if (req.loggedInUser) {
       currentPage = +req.query.halaman ? +req.query.halaman : 1;// ambil nilai query dari url
       allUrls = await ShortenedUrl.findAll({where: {userId: req.loggedInUser.id}});// ambil semua url dari database
       totalUrls = allUrls.length;// banyaknya url di database
@@ -77,7 +77,7 @@ exports.postShorten = async (req, res, next) => {
     /* untuk paginasi */
 
     if (!validationErrors.isEmpty()) {// jika inputan tidak lolos validasi
-      const shortenedUrls = req.isLoggedIn ?
+      const shortenedUrls = req.loggedInUser ?
       await ShortenedUrl.findAll({// ambil data url dengan paginasi
         where: {userId: req.loggedInUser.id},
         order: [['id', 'DESC']], // urutannya direverse
@@ -110,20 +110,20 @@ exports.postShorten = async (req, res, next) => {
       }
     }
 
-    if (req.isLoggedIn) {// jika user logged in
+    if (req.loggedInUser) {// jika user logged in
       await ShortenedUrl.create({secondId, url, parameter, userId: req.loggedInUser.id});// simpan URL baru dalam database
     } else {// jika user tidak logged in
       await GuestShortenedUrl.create({secondId, url, parameter, expiredAt});// simpan URL baru dalam database
     }
 
-    const shortenedUrls = req.isLoggedIn ?
+    const shortenedUrls = req.loggedInUser ?
     await ShortenedUrl.findAll({// ambil data url dengan paginasi
       where: {userId: req.loggedInUser.id},
       order: [['id', 'DESC']], // urutannya direverse
       offset: skipRows,
       limit: urlsPerPage,
     }) : null;
-    if (req.isLoggedIn) {// jika user logged in
+    if (req.loggedInUser) {// jika user logged in
       return res.status(201).render('main/user-index', {
         successMessage: `URL berhasil dibuat secara random, URL baru ada di baris paling atas. Anda bisa mengedit URL 
         dengan mengklik tombol pensil warna kuning dan menghapus URL dengan mengklik tombol trash warna merah.`,
@@ -158,7 +158,7 @@ exports.getEditUrl = async (req, res, next) => {
       return next();// lanjut ke middleware/controller berikutnya
     }
 
-    if (!req.isLoggedIn) {// jika user tidak logged in
+    if (!req.loggedInUser) {// jika user tidak logged in
       return res.redirect('/login');
     }
 

@@ -132,6 +132,7 @@ exports.getFormVerifikasiEmail = (req, res, next) => {
     res.render('auth/form-verifikasi-email', {
       pageTitle: 'Verifikasi Email - idurl.id',
       // metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
+      oldInput: {email: ''},
     });
   } catch (error) {
     error500(error, next);
@@ -148,6 +149,7 @@ exports.postFormVerifikasiEmail = async (req, res, next) => {
       return res.status(422).render('auth/form-verifikasi-email', {
         pageTitle: 'Verifikasi Email - idurl.id',
         // metaDescription: 'Verifikasi email dan mulai membuat custom url anda sendiri.',
+        oldInput: {email},
         problemMessage: validationErrors.array()[0].msg,
       });
     }
